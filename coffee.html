@@ -142,39 +142,10 @@
                                             or override it manually.</span>
                                     </div>
                                 </div>
-                                <div class="frow">
-                                    <div class="fg">
-                                        <label><span data-i18n="lbl_country">Country</span></label>
-                                        <select id="countrySelect" class="f-select"></select>
-                                    </div>
-                                    <div class="fg">
-                                        <label><span data-i18n="lbl_sort">Sort</span></label>
-                                        <select id="sortSelect" class="f-select"></select>
-                                    </div>
+                                <div id="farmsContainer" style="display: flex; flex-direction: column; gap: 16px;">
                                 </div>
-                                <div class="frow">
-                                    <div class="fg">
-                                        <label><span data-i18n="lbl_farms">Number of Farms</span></label>
-                                        <input type="number" id="numFarms" value="5" min="1" step="1">
-                                    </div>
-                                    <div class="fg">
-                                        <label><span data-i18n="lbl_trees">Trees per Farm</span></label>
-                                        <input type="number" id="treesPerFarm" value="10000" min="1" step="1000">
-                                    </div>
-                                </div>
-                                <div class="frow">
-                                    <div class="fg">
-                                        <label>
-                                            <span data-i18n="lbl_yield">Yield (kg / tree)</span>
-                                            <span class="tip-wrap" data-tip="tip_yield"><span
-                                                    class="tip-icon">?</span></span>
-                                        </label>
-                                        <input type="number" id="yieldPerTree" value="1.8" min="0.1" step="0.1">
-                                    </div>
-                                    <div class="fg">
-                                        <label><span data-i18n="lbl_total_trees">Total Trees (Calc)</span></label>
-                                        <input type="text" id="totalTreesCalc" readonly class="input-readonly">
-                                    </div>
+                                <div style="margin-top: 16px;">
+                                    <button class="btn btn-outline" id="addFarmBtn">+ Add Farm</button>
                                 </div>
                             </div>
                         </div>
@@ -199,11 +170,22 @@
                             <div class="card-header"><span class="card-title" data-i18n="scenarios_title">🎯
                                     Scenarios</span></div>
                             <div class="card-body p0">
-                                <div class="scenarios-list">
-                                    <button class="scenario-btn" data-scenario="georgia">🇬🇪 Georgia Default</button>
-                                    <button class="scenario-btn" data-scenario="ethiopia">🇪🇹 Ethiopia High
-                                        Yield</button>
-                                    <button class="scenario-btn" data-scenario="nftHeavy">🖼️ NFT Heavy Focus</button>
+                                <div class="scenarios-grid p-3">
+                                    <div class="scenario-card" data-scenario="georgia">
+                                        <h4>🇬🇪 Georgia Default</h4>
+                                        <p>Georgia Arabica</p>
+                                        <button class="btn btn-primary" style="width:100%">Load</button>
+                                    </div>
+                                    <div class="scenario-card" data-scenario="ethiopia">
+                                        <h4>🇪🇹 Ethiopia High Yield</h4>
+                                        <p>Ethiopia Yirgacheffe</p>
+                                        <button class="btn btn-primary" style="width:100%">Load</button>
+                                    </div>
+                                    <div class="scenario-card" data-scenario="nftHeavy">
+                                        <h4>🖼️ NFT Heavy Focus</h4>
+                                        <p>Colombia Caturra (NFT focus)</p>
+                                        <button class="btn btn-primary" style="width:100%">Load</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

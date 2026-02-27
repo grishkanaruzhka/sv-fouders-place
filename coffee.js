@@ -3,11 +3,8 @@ const state = {
     lang: 'en',
     theme: 'dark',
     yields: null,
-    country: 'Georgia',
-    sort: 'Arabica',
-    numFarms: 5,
-    treesPerFarm: 10000,
-    yieldPerTree: 1.8,
+    _farmId: 0,
+    farms: [],
     beanPrice: 8,
     cupsPerYear: 100000,
     cupPrice: 5,
@@ -132,74 +129,103 @@ const fmt = {
 };
 
 // ─── INITIALIZATION & FETCH ───────────────────────────────────────────────────
-async function loadYields() {
-    try {
-        const res = await fetch('yields.json');
-        state.yields = await res.json();
-        populateDropdowns();
-    } catch (err) {
-        console.error('Failed to load yields.json', err);
-    }
-}
-
-function populateDropdowns() {
-    const countrySel = document.getElementById('countrySelect');
-    countrySel.innerHTML = '';
-    Object.keys(state.yields).forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c;
-        opt.textContent = c;
-        countrySel.appendChild(opt);
-    });
-    countrySel.value = state.country;
-    countrySel.onchange = (e) => {
-        state.country = e.target.value;
-        updateSorts();
-        autoYield();
-        autoCalc();
+function loadYields() {
+    state.yields = {
+        "Georgia": { "Arabica": 1.8, "Liberica": 1.5 },
+        "Ethiopia": { "Yirgacheffe": 2.5, "Sidamo": 2.2 },
+        "Colombia": { "Caturra": 2.0, "Castillo": 2.3 },
+        "Kenya": { "SL34": 2.1, "Ruiru11": 2.4 }
     };
-    updateSorts();
+    populateDropdowns();
 }
 
-function updateSorts() {
-    const sortSel = document.getElementById('sortSelect');
-    sortSel.innerHTML = '';
-    const sorts = Object.keys(state.yields[state.country]);
-    sorts.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s;
-        opt.textContent = s;
-        sortSel.appendChild(opt);
+// ─── FARM DYNAMICS ────────────────────────────────────────────────────────────
+function addFarm(country = 'Georgia', sort = 'Arabica', trees = 10000) {
+    const id = ++state._farmId;
+    let yieldPerTree = 1.8;
+    if (state.yields && state.yields[country] && state.yields[country][sort]) {
+        yieldPerTree = state.yields[country][sort];
+    }
+    state.farms.push({ id, country, sort, trees, yieldPerTree });
+    renderFarms();
+    autoCalc();
+}
+
+function removeFarm(id) {
+    state.farms = state.farms.filter(f => f.id !== id);
+    renderFarms();
+    autoCalc();
+}
+
+function updateFarm(id, field, val) {
+    const farm = state.farms.find(f => f.id === id);
+    if (!farm) return;
+    farm[field] = val;
+
+    if (field === 'country' || field === 'sort') {
+        if (state.yields && state.yields[farm.country] && state.yields[farm.country][farm.sort]) {
+            farm.yieldPerTree = state.yields[farm.country][farm.sort];
+        }
+        renderFarms();
+    }
+    autoCalc();
+}
+
+function renderFarms() {
+    const container = document.getElementById('farmsContainer');
+    if (!container) return;
+
+    let html = '';
+    state.farms.forEach((f, idx) => {
+        const countryOpts = Object.keys(state.yields || {}).map(c =>
+            `<option value="${c}" ${c === f.country ? 'selected' : ''}>${c}</option>`
+        ).join('');
+
+        const sortOpts = (state.yields && state.yields[f.country])
+            ? Object.keys(state.yields[f.country]).map(s => `<option value="${s}" ${s === f.sort ? 'selected' : ''}>${s}</option>`).join('')
+            : `<option value="${f.sort}">${f.sort}</option>`;
+
+        html += `<div class="item-card" id="farm-${f.id}">
+            <div class="item-hdr">
+                 <span class="item-name">Farm #${idx + 1}</span>
+                 <button class="delbtn" onclick="removeFarm(${f.id})">✕</button>
+            </div>
+            <div class="frow">
+                <div class="fg">
+                    <label><span data-i18n="lbl_country">Country</span></label>
+                    <select class="f-select" onchange="updateFarm(${f.id}, 'country', this.value)">${countryOpts}</select>
+                </div>
+                <div class="fg">
+                    <label><span data-i18n="lbl_sort">Sort</span></label>
+                    <select class="f-select" onchange="updateFarm(${f.id}, 'sort', this.value)">${sortOpts}</select>
+                </div>
+            </div>
+            <div class="frow">
+                <div class="fg">
+                    <label><span data-i18n="lbl_trees">Trees per Farm</span></label>
+                    <input type="number" value="${f.trees}" min="1" step="100" oninput="updateFarm(${f.id}, 'trees', +this.value)">
+                </div>
+                <div class="fg">
+                    <label>
+                        <span data-i18n="lbl_yield">Yield (kg / tree)</span>
+                    </label>
+                    <input type="number" value="${f.yieldPerTree}" min="0.1" step="0.1" oninput="updateFarm(${f.id}, 'yieldPerTree', +this.value)">
+                </div>
+            </div>
+        </div>`;
     });
-    if (sorts.includes(state.sort)) {
-        sortSel.value = state.sort;
-    } else {
-        state.sort = sorts[0];
-        sortSel.value = sorts[0];
-    }
-    sortSel.onchange = (e) => {
-        state.sort = e.target.value;
-        autoYield();
-        autoCalc();
-    };
-}
-
-function autoYield() {
-    if (state.yields && state.yields[state.country] && state.yields[state.country][state.sort]) {
-        state.yieldPerTree = state.yields[state.country][state.sort];
-        document.getElementById('yieldPerTree').value = state.yieldPerTree;
-    }
+    container.innerHTML = html;
+    applyI18n();
 }
 
 // ─── BIND INPUTS ──────────────────────────────────────────────────────────────
-const binds = ['numFarms', 'treesPerFarm', 'yieldPerTree', 'beanPrice', 'cupsPerYear', 'cupPrice', 'cupPct', 'nftPrimaryQty', 'nftPrimaryPrice', 'nftPrimaryComm', 'nftSecondaryTx', 'nftSecondaryPrice', 'nftSecondaryRoyalty', 'nftQuickQty', 'nftQuickPrice', 'nftQuickComm'];
+const binds = ['beanPrice', 'cupsPerYear', 'cupPrice', 'cupPct', 'nftPrimaryQty', 'nftPrimaryPrice', 'nftPrimaryComm', 'nftSecondaryTx', 'nftSecondaryPrice', 'nftSecondaryRoyalty', 'nftQuickQty', 'nftQuickPrice', 'nftQuickComm'];
 
 binds.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
         el.addEventListener('input', (e) => {
             state[id] = parseFloat(e.target.value) || 0;
-            updateCalcs();
             autoCalc();
         });
     }
@@ -214,26 +240,29 @@ if (costsSlider) {
     });
 }
 
-function updateCalcs() {
-    const totalTrees = state.numFarms * state.treesPerFarm;
-    document.getElementById('totalTreesCalc').value = fmt.num(totalTrees);
-    const totalYield = totalTrees * state.yieldPerTree;
-    document.getElementById('totalYieldCalc').value = fmt.num(totalYield) + ' kg';
-}
-
 function syncInputs() {
     binds.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = state[id];
     });
-    if (document.getElementById('countrySelect')) document.getElementById('countrySelect').value = state.country;
-    updateCalcs();
 }
 
 // ─── CALCULATION PROCESS ──────────────────────────────────────────────────────
 function calculate() {
-    const totalTrees = state.numFarms * state.treesPerFarm;
-    const yieldKg = totalTrees * state.yieldPerTree;
+    let totalTrees = 0;
+    let yieldKg = 0;
+
+    state.farms.forEach(f => {
+        totalTrees += f.trees;
+        yieldKg += (f.trees * f.yieldPerTree);
+    });
+
+    // Update global calculation readouts safely if they exist
+    const treesDisplay = document.getElementById('totalTreesCalc');
+    if (treesDisplay) treesDisplay.value = fmt.num(totalTrees);
+
+    const yieldDisplay = document.getElementById('totalYieldCalc');
+    if (yieldDisplay) yieldDisplay.value = fmt.num(Math.round(yieldKg)) + ' kg';
 
     const grainRevenue = yieldKg * state.beanPrice;
     const cupRevenue = state.cupsPerYear * state.cupPrice * (state.cupPct / 100);
@@ -303,33 +332,27 @@ function renderTable() {
 // ─── SCENARIOS ────────────────────────────────────────────────────────────────
 const scenarios = {
     georgia: () => {
-        state.country = 'Georgia'; state.sort = 'Arabica'; state.numFarms = 5; state.treesPerFarm = 20000;
-        state.yieldPerTree = 1.8; state.beanPrice = 8; state.cupsPerYear = 100000;
+        state.farms = []; state._farmId = 0;
+        addFarm('Georgia', 'Arabica', 20000);
+        addFarm('Georgia', 'Arabica', 20000);
+        state.beanPrice = 8; state.cupsPerYear = 100000;
         state.nftPrimaryQty = 1000; state.nftPrimaryPrice = 100; state.nftSecondaryTx = 500;
     },
     ethiopia: () => {
-        state.country = 'Ethiopia'; state.sort = 'Yirgacheffe'; state.numFarms = 10; state.treesPerFarm = 50000;
-        state.yieldPerTree = 2.5; state.beanPrice = 12; state.cupsPerYear = 500000;
+        state.farms = []; state._farmId = 0;
+        addFarm('Ethiopia', 'Yirgacheffe', 50000);
+        state.beanPrice = 12; state.cupsPerYear = 500000;
         state.nftPrimaryQty = 500; state.nftPrimaryPrice = 150; state.nftSecondaryTx = 1000;
     },
     nftHeavy: () => {
-        state.country = 'Colombia'; state.sort = 'Caturra'; state.numFarms = 2; state.treesPerFarm = 5000;
-        state.yieldPerTree = 2.0; state.beanPrice = 7; state.cupsPerYear = 20000;
+        state.farms = []; state._farmId = 0;
+        addFarm('Colombia', 'Caturra', 5000);
+        state.beanPrice = 7; state.cupsPerYear = 20000;
         state.nftPrimaryQty = 5000; state.nftPrimaryPrice = 250; state.nftPrimaryComm = 10; state.nftSecondaryTx = 15000;
     }
 };
 
-document.querySelectorAll('.scenario-btn').forEach(btn => {
-    btn.onclick = () => {
-        const scen = btn.dataset.scenario;
-        if (scenarios[scen]) {
-            scenarios[scen]();
-            populateDropdowns();
-            syncInputs();
-            calculate();
-        }
-    };
-});
+
 
 // ─── TABS & DRAWER & I18N ─────────────────────────────────────────────────────
 function switchTab(name) {
@@ -382,7 +405,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀️';
 
     _initGlobalTip();
-    await loadYields();
+    loadYields();
+
+    document.getElementById('addFarmBtn').onclick = () => addFarm();
+
+    // Default init empty state
+    if (state.farms.length === 0) addFarm('Georgia', 'Arabica', 10000);
+
     syncInputs();
     calculate();
     applyI18n();
@@ -390,6 +419,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('calcBtn').onclick = calculate;
     document.getElementById('tabNav').querySelectorAll('.tab-btn').forEach(btn => {
         btn.onclick = () => switchTab(btn.dataset.tab);
+    });
+
+    document.querySelectorAll('.scenario-card').forEach(btn => {
+        btn.onclick = () => {
+            const scen = btn.closest('.scenario-card').dataset.scenario;
+            if (scenarios[scen]) {
+                scenarios[scen]();
+                syncInputs();
+                calculate();
+            }
+        };
     });
 
     document.getElementById('langBtn').onclick = () => {
