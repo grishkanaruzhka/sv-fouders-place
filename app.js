@@ -708,10 +708,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Default theme based on Telegram WebApp
     if (tg.colorScheme) {
       state.theme = tg.colorScheme;
-      document.documentElement.setAttribute('data-theme', state.theme);
-      document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀️';
     }
   }
+
+  // Override with localStorage if exists
+  const savedTheme = localStorage.getItem('app_theme');
+  if (savedTheme) {
+    state.theme = savedTheme;
+  }
+
+  document.documentElement.setAttribute('data-theme', state.theme);
+  document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀️';
 
   _initGlobalTip();
   applyI18n();
@@ -744,6 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.theme = state.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', state.theme);
     document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('app_theme', state.theme);
     const chartsTab = document.getElementById('tab-charts');
     if (chartsTab && chartsTab.classList.contains('active')) renderCharts();
   };

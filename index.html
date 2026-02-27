@@ -202,20 +202,23 @@
                 }
 
                 // Theme syncing
-                const setTheme = () => {
+                const setThemeTg = () => {
                     const params = tg.themeParams;
                     if (params.bg_color) {
-                        if (tg.colorScheme === 'light') {
-                            document.documentElement.setAttribute('data-theme', 'light');
-                            document.getElementById('themeBtn').textContent = '☀️';
-                        } else {
-                            document.documentElement.setAttribute('data-theme', 'dark');
-                            document.getElementById('themeBtn').textContent = '🌙';
-                        }
+                        const tgTheme = tg.colorScheme === 'light' ? 'light' : 'dark';
+                        document.documentElement.setAttribute('data-theme', tgTheme);
+                        document.getElementById('themeBtn').textContent = tgTheme === 'dark' ? '🌙' : '☀️';
                     }
                 };
-                setTheme();
-                tg.onEvent('themeChanged', setTheme);
+                setThemeTg();
+                tg.onEvent('themeChanged', setThemeTg);
+            }
+
+            // Override with localStorage if exists
+            const savedTheme = localStorage.getItem('app_theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
             }
         });
 
@@ -234,13 +237,10 @@
         document.getElementById('themeBtn').addEventListener('click', () => {
             const html = document.documentElement;
             const current = html.getAttribute('data-theme');
-            if (current === 'dark') {
-                html.setAttribute('data-theme', 'light');
-                document.getElementById('themeBtn').textContent = '☀️';
-            } else {
-                html.setAttribute('data-theme', 'dark');
-                document.getElementById('themeBtn').textContent = '🌙';
-            }
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            document.getElementById('themeBtn').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+            localStorage.setItem('app_theme', newTheme);
         });
 
         // Simple English dummy toggle for Hub
