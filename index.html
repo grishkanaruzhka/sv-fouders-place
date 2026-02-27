@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAFE+ — Equity & Dilution Modeling</title>
+    <meta name="description"
+        content="Professional SAFE note calculator for startup equity and dilution modeling. Supports multiple SAFEs, priced rounds, cap table visualization.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        <!-- MENU DRAWER OVERLAY -->
+        <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div>
+        <div class="drawer" id="appDrawer">
+            <div class="drawer-header">
+                <span class="drawer-title">Menu</span>
+                <button class="drawer-close" onclick="closeMenu()">✕</button>
+            </div>
+            <div class="drawer-section-label">Tools</div>
+            <button class="drawer-item active" onclick="closeMenu()">
+                <span class="drawer-item-icon">➕</span>
+                <div class="drawer-item-info">
+                    <div class="drawer-item-name">SAFE+</div>
+                    <div class="drawer-item-desc">Equity & dilution modeling</div>
+                </div>
+                <span class="drawer-item-badge">Open</span>
+            </button>
+            <button class="drawer-item disabled">
+                <span class="drawer-item-icon">📊</span>
+                <div class="drawer-item-info">
+                    <div class="drawer-item-name">Cap Raise Planner</div>
+                    <div class="drawer-item-desc">Coming soon</div>
+                </div>
+                <span class="drawer-item-badge soon">Soon</span>
+            </button>
+            <button class="drawer-item disabled">
+                <span class="drawer-item-icon">🏦</span>
+                <div class="drawer-item-info">
+                    <div class="drawer-item-name">Valuation Model</div>
+                    <div class="drawer-item-desc">Coming soon</div>
+                </div>
+                <span class="drawer-item-badge soon">Soon</span>
+            </button>
+            <button class="drawer-item disabled">
+                <span class="drawer-item-icon">📋</span>
+                <div class="drawer-item-info">
+                    <div class="drawer-item-name">Term Sheet Builder</div>
+                    <div class="drawer-item-desc">Coming soon</div>
+                </div>
+                <span class="drawer-item-badge soon">Soon</span>
+            </button>
+            <div class="drawer-footer">SIGE · Startup Toolkit</div>
+        </div>
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">
+                <!-- SAFE+ Logo: hexagon badge with + -->
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="lg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#7c6dff" />
+                            <stop offset="100%" stop-color="#00d2ff" />
+                        </linearGradient>
+                        <linearGradient id="lg2" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#7c6dff" stop-opacity="0.18" />
+                            <stop offset="100%" stop-color="#00d2ff" stop-opacity="0.08" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Hexagon -->
+                    <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lg2)" stroke="url(#lg1)"
+                        stroke-width="1.8" />
+                    <!-- Plus sign (horizontal) -->
+                    <rect x="10.5" y="16.2" width="15" height="3.6" rx="1.8" fill="url(#lg1)" />
+                    <!-- Plus sign (vertical) -->
+                    <rect x="16.2" y="10.5" width="3.6" height="15" rx="1.8" fill="url(#lg1)" />
+                </svg>
+                <span class="logo-text">SAFE<span class="logo-accent">+</span></span>
+            </div>
+
+            <nav class="tab-nav" id="tabNav">
+                <button class="tab-btn active" data-tab="input"><span class="ti">⚙️</span><span
+                        data-i18n="tab_input">Setup</span></button>
+                <button class="tab-btn" data-tab="captable"><span class="ti">📋</span><span data-i18n="tab_captable">Cap
+                        Table</span></button>
+                <button class="tab-btn" data-tab="charts"><span class="ti">📈</span><span
+                        data-i18n="tab_charts">Charts</span></button>
+                <button class="tab-btn" data-tab="scenarios"><span class="ti">🎯</span><span
+                        data-i18n="tab_scenarios">Scenarios</span></button>
+            </nav>
+
+            <div class="header-actions">
+                <button class="hbtn" id="langBtn">EN</button>
+                <button class="hbtn" id="themeBtn">🌙</button>
+                <button class="hbtn menu-btn" id="menuBtn" onclick="openMenu()" aria-label="Menu">
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                </button>
+            </div>
+        </header>
+
+
+        <!-- MAIN -->
+        <main class="mc">
+
+            <!-- TAB: SETUP -->
+            <div id="tab-input" class="tab-pane active">
+                <div class="layout-2col">
+                    <div class="input-col">
+
+                        <!-- Founders -->
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title" data-i18n="founders_title">🏢 Founders & Initial Setup</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="frow">
+                                    <div class="fg">
+                                        <label>
+                                            <span data-i18n="lbl_founder_shares">Founder Shares</span>
+                                            <span class="tip-wrap" data-tip="tip_founder_shares"><span class="tip-icon">?</span></span>
+                                        </label>
+                                        <input type="number" id="founderShares" value="10000000" min="1" step="100000">
+                                    </div>
+                                    <div class="fg" id="optionPoolGroup">
+                                        <label>
+                                            <span data-i18n="lbl_option_pool">Initial Option Pool %</span>
+                                            <span class="tip-wrap" data-tip="tip_option_pool"><span class="tip-icon">?</span></span>
+                                        </label>
+                                        <input type="number" id="optionPoolPct" value="10" min="0" max="50" step="0.5">
+                                    </div>
+                                </div>
+                                <!-- Option Pool Toggle -->
+                                <div class="toggle-row">
+                                    <input type="checkbox" class="pool-toggle" id="includeOptionPool" checked>
+                                    <label for="includeOptionPool" class="pool-toggle-label">
+                                        <span data-i18n="lbl_include_pool">Include Option Pool</span>
+                                        <span class="tip-wrap" data-tip="tip_include_pool"><span class="tip-icon">?</span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SAFEs -->
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title" data-i18n="safes_title">🔐 SAFE Notes</span>
+                                <span class="tip-wrap" data-tip="tip_block_safes"><span class="tip-icon">?</span></span>
+                                <button class="btn btn-sm btn-outline" id="addSafeBtn">+ <span data-i18n="add_safe">Add
+                                        SAFE</span></button>
+                            </div>
+                            <div id="safesList" class="items-list">
+                                <div class="empty-state" data-i18n="no_safes">No SAFEs yet. Add one above.</div>
+                            </div>
+                        </div>
+
+                        <!-- Priced Rounds -->
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title" data-i18n="rounds_title">💰 Priced Rounds</span>
+                                <span class="tip-wrap" data-tip="tip_block_rounds"><span
+                                        class="tip-icon">?</span></span>
+                                <button class="btn btn-sm btn-outline" id="addRoundBtn">+ <span
+                                        data-i18n="add_round">Add Round</span></button>
+                            </div>
+                            <div id="roundsList" class="items-list">
+                                <div class="empty-state" data-i18n="no_rounds">No priced rounds yet.</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Quick Summary + Formulas -->
+                    <div class="summary-col">
+                        <div class="card sticky-card">
+                            <div class="card-header">
+                                <span class="card-title" data-i18n="summary_title">📊 Quick Summary</span>
+                                <span class="tip-wrap" data-tip="tip_block_summary"><span
+                                        class="tip-icon">?</span></span>
+                                <button class="btn btn-sm btn-primary" id="calcBtn"
+                                    data-i18n="calculate">Calculate</button>
+                            </div>
+                            <div id="quickSummary" class="card-body">
+                                <div class="empty-state" data-i18n="summary_hint">Fill in your data and click Calculate.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FORMULAS / HOW IT WORKS -->
+                        <div class="card" id="formulasCard">
+                            <div class="card-header collapsible-header" onclick="toggleFormulas()" id="formulasToggle">
+                                <span class="card-title" data-i18n="formulas_title">📐 How It's Calculated</span>
+                                <span class="tip-wrap" data-tip="tip_block_formulas"><span
+                                        class="tip-icon">?</span></span>
+                                <span class="collapse-icon" id="formulasIcon">▼</span>
+                            </div>
+                            <div class="card-body" id="formulasBody">
+
+                                <!-- Process flow -->
+                                <div class="process-flow">
+                                    <div class="pf-step">
+                                        <div class="pf-num">1</div>
+                                        <div class="pf-label" data-i18n="pf_founders">Set Founders</div>
+                                    </div>
+                                    <div class="pf-arrow">→</div>
+                                    <div class="pf-step">
+                                        <div class="pf-num">2</div>
+                                        <div class="pf-label" data-i18n="pf_safe">Add SAFEs</div>
+                                    </div>
+                                    <div class="pf-arrow">→</div>
+                                    <div class="pf-step">
+                                        <div class="pf-num">3</div>
+                                        <div class="pf-label" data-i18n="pf_round">Priced Round</div>
+                                    </div>
+                                    <div class="pf-arrow">→</div>
+                                    <div class="pf-step pf-step-ok">
+                                        <div class="pf-num">✓</div>
+                                        <div class="pf-label" data-i18n="pf_result">Cap Table</div>
+                                    </div>
+                                </div>
+
+                                <!-- Formula grid (single column to fit sidebar) -->
+                                <div class="formula-grid formula-grid-1col">
+                                    <div class="formula-section">
+                                        <div class="fsec-title">🔐 <span data-i18n="fsec_safe">SAFE Conversion</span>
+                                        </div>
+                                        <div class="formula-item">
+                                            <div class="formula-name" data-i18n="fn_safe_price">SAFE Price (lower wins)
+                                            </div>
+                                            <div class="formula-eq">min( Cap ÷ Shares, PPS × (1−Disc%) )</div>
+                                            <div class="formula-note" data-i18n="fn_safe_price_note">Lower price = more
+                                                shares for investor</div>
+                                        </div>
+                                        <div class="formula-item">
+                                            <div class="formula-name" data-i18n="fn_safe_shares">SAFE Shares</div>
+                                            <div class="formula-eq">Amount ÷ SAFE Price</div>
+                                        </div>
+                                        <div class="formula-item">
+                                            <div class="formula-name" data-i18n="fn_post_safe">Post-$ SAFE Ownership
+                                            </div>
+                                            <div class="formula-eq">Amount ÷ Post-money Cap</div>
+                                            <div class="formula-note" data-i18n="fn_post_safe_note">Fixed % locked at
+                                                investment</div>
+                                        </div>
+                                    </div>
+                                    <div class="formula-section">
+                                        <div class="fsec-title">💰 <span data-i18n="fsec_round">Priced Round</span>
+                                        </div>
+                                        <div class="formula-item">
+                                            <div class="formula-name" data-i18n="fn_pps">Price Per Share (PPS)</div>
+                                            <div class="formula-eq">Pre-money Val ÷ Pre-$ Shares</div>
+                                        </div>
+                                        <div class="formula-item">
+                                            <div class="formula-name" data-i18n="fn_new_shares">New Investor Shares
+                                            </div>
+                                            <div class="formula-eq">New Money ÷ PPS</div>
+                                        </div>
+                                        <div class="formula-item">
+                                            <div class="formula-name" data-i18n="fn_postmoney">Post-money Valuation
+                                            </div>
+                                            <div class="formula-eq">Pre-money + New Money</div>
+                                        </div>
+                                    </div>
+                                    <div class="formula-section">
+                                        <div class="fsec-title">📉 <span data-i18n="fsec_dilution">Dilution</span></div>
+                                        <div class="formula-item">
+                                            <div class="formula-name" data-i18n="fn_founder_pct">Founder Ownership %
+                                            </div>
+                                            <div class="formula-eq">Founder Shares ÷ Total × 100</div>
+                                        </div>
+                                        <div class="formula-item">
+                                            <div class="formula-name" data-i18n="fn_pool">Option Pool (pre-money)</div>
+                                            <div class="formula-eq">Total × Pool% ÷ (1 − Pool%)</div>
+                                            <div class="formula-note" data-i18n="fn_pool_note">Dilutes founders, not
+                                                investors</div>
+                                        </div>
+                                        <div class="formula-item">
+                                            <div class="formula-name" data-i18n="fn_down">Down Round</div>
+                                            <div class="formula-eq">Cap is NOT a price floor</div>
+                                            <div class="formula-note" data-i18n="fn_down_note">Discount wins if Pre-$
+                                                &lt; Cap</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: CAP TABLE -->
+            <div id="tab-captable" class="tab-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title" data-i18n="captable_title">📋 Capitalization Table</span>
+                        <div class="row-gap8">
+                            <button class="btn btn-sm btn-outline" id="exportCsvBtn">⬇ CSV</button>
+                        </div>
+                    </div>
+                    <div class="card-body p0">
+                        <div id="capTableContainer" class="tbl-wrap">
+                            <div class="empty-state" style="padding:40px" data-i18n="captable_empty">Run a calculation
+                                first.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: CHARTS -->
+            <div id="tab-charts" class="tab-pane">
+                <div class="charts-grid">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title" data-i18n="chart_ownership">Ownership
+                                Distribution</span></div>
+                        <div class="card-body chart-body"><canvas id="ownershipChart"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title" data-i18n="chart_dilution">Dilution Over
+                                Rounds</span></div>
+                        <div class="card-body chart-body"><canvas id="dilutionChart"></canvas></div>
+                    </div>
+                    <div class="card chart-full">
+                        <div class="card-header">
+                            <span class="card-title" data-i18n="chart_sensitivity">Sensitivity: Founder % vs Cap</span>
+                        </div>
+                        <div class="card-body chart-body-wide"><canvas id="sensitivityChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SCENARIOS -->
+            <div id="tab-scenarios" class="tab-pane">
+                <div class="scenarios-grid">
+                    <div class="scenario-card" data-scenario="single">
+                        <div class="sc-icon">1️⃣</div>
+                        <div class="sc-info">
+                            <h3 data-i18n="s1_title">Single SAFE → Series A</h3>
+                            <p data-i18n="s1_desc">$500K SAFE, $5M cap, 20% discount → $3M Series A at $10M pre-money
+                            </p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" data-i18n="load_btn">Load</button>
+                    </div>
+                    <div class="scenario-card" data-scenario="multi">
+                        <div class="sc-icon">🔢</div>
+                        <div class="sc-info">
+                            <h3 data-i18n="s2_title">Multiple SAFEs (Pre + Post)</h3>
+                            <p data-i18n="s2_desc">$250K pre $3M cap + $500K post $6M cap → $5M Series A at $15M pre</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" data-i18n="load_btn">Load</button>
+                    </div>
+                    <div class="scenario-card" data-scenario="down">
+                        <div class="sc-icon">📉</div>
+                        <div class="sc-info">
+                            <h3 data-i18n="s3_title">Down Round</h3>
+                            <p data-i18n="s3_desc">$1M SAFE at $8M cap → Series A at $5M pre (cap > pre-money, discount
+                                wins)</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" data-i18n="load_btn">Load</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><span class="card-title" data-i18n="whatif_title">🔮 What-If: Founder % at
+                            Different Caps</span></div>
+                    <div class="card-body p0">
+                        <div id="whatifTable" class="tbl-wrap">
+                            <div class="empty-state" style="padding:40px" data-i18n="whatif_hint">Load a scenario or
+                                calculate to see what-if analysis.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="charts.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
