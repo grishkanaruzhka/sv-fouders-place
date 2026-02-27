@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SV Tools — Coffee & NFT Revenue</title>
+    <meta name="description" content="Interactive revenue calculator for coffee farms, cup sales, and NFTs.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- MENU DRAWER OVERLAY -->
+        <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div>
+        <div class="drawer" id="appDrawer">
+            <div class="drawer-header">
+                <div class="logo">
+                    <!-- SAFE+ Logo -->
+                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="lgDrawer1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#7c6dff" />
+                                <stop offset="100%" stop-color="#00d2ff" />
+                            </linearGradient>
+                            <linearGradient id="lgDrawer2" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#7c6dff" stop-opacity="0.18" />
+                                <stop offset="100%" stop-color="#00d2ff" stop-opacity="0.08" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lgDrawer2)"
+                            stroke="url(#lgDrawer1)" stroke-width="1.8" />
+                        <rect x="10.5" y="16.2" width="15" height="3.6" rx="1.8" fill="url(#lgDrawer1)" />
+                        <rect x="16.2" y="10.5" width="3.6" height="15" rx="1.8" fill="url(#lgDrawer1)" />
+                    </svg>
+                    <span class="logo-text">SV<span class="logo-accent">Tools</span></span>
+                </div>
+                <button class="drawer-close" onclick="closeMenu()">✕</button>
+            </div>
+            <div class="drawer-section-label">Calculators</div>
+            <button class="drawer-item" onclick="window.location.href='index.html'">
+                <span class="drawer-item-icon">➕</span>
+                <div class="drawer-item-info">
+                    <div class="drawer-item-name">SAFE+</div>
+                    <div class="drawer-item-desc">Equity & dilution modeling</div>
+                </div>
+            </button>
+            <button class="drawer-item active" onclick="closeMenu()">
+                <span class="drawer-item-icon">☕</span>
+                <div class="drawer-item-info">
+                    <div class="drawer-item-name">Coffee Farm</div>
+                    <div class="drawer-item-desc">Yield & NFT revenue</div>
+                </div>
+                <span class="drawer-item-badge">Open</span>
+            </button>
+            <div class="drawer-footer">SV Founders Tools</div>
+        </div>
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="lg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#7c6dff" />
+                            <stop offset="100%" stop-color="#00d2ff" />
+                        </linearGradient>
+                        <linearGradient id="lg2" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#7c6dff" stop-opacity="0.18" />
+                            <stop offset="100%" stop-color="#00d2ff" stop-opacity="0.08" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lg2)" stroke="url(#lg1)"
+                        stroke-width="1.8" />
+                    <!-- Coffee bean icon simplified -->
+                    <path d="M14 10 C 22 10, 26 14, 26 22 C 18 26, 10 22, 14 10 Z" fill="url(#lg1)" />
+                    <path d="M16 12 C 20 16, 20 20, 20 20" stroke="#0d0f1a" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                <span class="logo-text">Coffee<span class="logo-accent">Yield</span></span>
+            </div>
+
+            <nav class="tab-nav" id="tabNav">
+                <button class="tab-btn active" data-tab="farms"><span class="ti">🌱</span><span
+                        data-i18n="tab_farms">Farms</span></button>
+                <button class="tab-btn" data-tab="sales"><span class="ti">☕</span><span
+                        data-i18n="tab_sales">Sales</span></button>
+                <button class="tab-btn" data-tab="nft"><span class="ti">🖼️</span><span
+                        data-i18n="tab_nft">NFT</span></button>
+                <button class="tab-btn" data-tab="results"><span class="ti">📊</span><span
+                        data-i18n="tab_results">Results</span></button>
+            </nav>
+
+            <div class="header-actions">
+                <button class="hbtn" id="langBtn">EN</button>
+                <button class="hbtn" id="themeBtn">🌙</button>
+                <button class="hbtn menu-btn" id="menuBtn" onclick="openMenu()" aria-label="Menu">
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN -->
+        <main class="mc">
+
+            <!-- TAB: FARMS & YIELD -->
+            <div id="tab-farms" class="tab-pane active">
+                <div class="layout-2col">
+                    <div class="input-col">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title" data-i18n="farms_title">🌱 Farms & Yield Setup</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="block-hint">
+                                    <span class="block-hint-icon">🌍</span>
+                                    <div>
+                                        <strong data-i18n="hint_farms_title">Yield Generation</strong>
+                                        <span data-i18n="hint_farms_body"> — Average grain yield per tree depends on the
+                                            country and coffee sort. Select them below to auto-fetch the expected yield,
+                                            or override it manually.</span>
+                                    </div>
+                                </div>
+                                <div class="frow">
+                                    <div class="fg">
+                                        <label><span data-i18n="lbl_country">Country</span></label>
+                                        <select id="countrySelect" class="f-select"></select>
+                                    </div>
+                                    <div class="fg">
+                                        <label><span data-i18n="lbl_sort">Sort</span></label>
+                                        <select id="sortSelect" class="f-select"></select>
+                                    </div>
+                                </div>
+                                <div class="frow">
+                                    <div class="fg">
+                                        <label><span data-i18n="lbl_farms">Number of Farms</span></label>
+                                        <input type="number" id="numFarms" value="5" min="1" step="1">
+                                    </div>
+                                    <div class="fg">
+                                        <label><span data-i18n="lbl_trees">Trees per Farm</span></label>
+                                        <input type="number" id="treesPerFarm" value="10000" min="1" step="1000">
+                                    </div>
+                                </div>
+                                <div class="frow">
+                                    <div class="fg">
+                                        <label>
+                                            <span data-i18n="lbl_yield">Yield (kg / tree)</span>
+                                            <span class="tip-wrap" data-tip="tip_yield"><span
+                                                    class="tip-icon">?</span></span>
+                                        </label>
+                                        <input type="number" id="yieldPerTree" value="1.8" min="0.1" step="0.1">
+                                    </div>
+                                    <div class="fg">
+                                        <label><span data-i18n="lbl_total_trees">Total Trees (Calc)</span></label>
+                                        <input type="text" id="totalTreesCalc" readonly class="input-readonly">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Summary -->
+                    <div class="summary-col">
+                        <div class="card sticky-card">
+                            <div class="card-header">
+                                <span class="card-title" data-i18n="summary_title">📊 Quick Summary</span>
+                                <button class="btn btn-sm btn-primary" id="calcBtn"
+                                    data-i18n="calculate">Calculate</button>
+                            </div>
+                            <div id="quickSummary" class="card-body">
+                                <div class="empty-state" data-i18n="summary_hint">Fill in your data and click Calculate.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scenarios Card Sidebar -->
+                        <div class="card">
+                            <div class="card-header"><span class="card-title" data-i18n="scenarios_title">🎯
+                                    Scenarios</span></div>
+                            <div class="card-body p0">
+                                <div class="scenarios-list">
+                                    <button class="scenario-btn" data-scenario="georgia">🇬🇪 Georgia Default</button>
+                                    <button class="scenario-btn" data-scenario="ethiopia">🇪🇹 Ethiopia High
+                                        Yield</button>
+                                    <button class="scenario-btn" data-scenario="nftHeavy">🖼️ NFT Heavy Focus</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: COFFEE SALES -->
+            <div id="tab-sales" class="tab-pane">
+                <div class="layout-2col">
+                    <div class="input-col">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title" data-i18n="sales_title">☕ Coffee & Cup Sales</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="block-hint">
+                                    <span class="block-hint-icon">💰</span>
+                                    <div>
+                                        <strong data-i18n="hint_sales_title">Revenue Streams</strong>
+                                        <span data-i18n="hint_sales_body"> — Enter your wholesale grain prices and
+                                            direct-to-consumer cup sales. The company takes a percentage of cup sales as
+                                            revenue.</span>
+                                    </div>
+                                </div>
+                                <h3 class="section-sub" data-i18n="sub_grain">Wholesale Grain</h3>
+                                <div class="frow">
+                                    <div class="fg">
+                                        <label>
+                                            <span data-i18n="lbl_bean_price">Price per KG ($)</span>
+                                            <span class="tip-wrap" data-tip="tip_bean_price"><span
+                                                    class="tip-icon">?</span></span>
+                                        </label>
+                                        <input type="number" id="beanPrice" value="8" min="0" step="0.5">
+                                    </div>
+                                    <div class="fg">
+                                        <label><span data-i18n="lbl_total_kg">Total Yield KG (Calc)</span></label>
+                                        <input type="text" id="totalYieldCalc" readonly class="input-readonly">
+                                    </div>
+                                </div>
+
+                                <h3 class="section-sub mt-4" data-i18n="sub_cups">Direct Cup Sales</h3>
+                                <div class="frow">
+                                    <div class="fg">
+                                        <label><span data-i18n="lbl_cups_year">Cups sold per year</span></label>
+                                        <input type="number" id="cupsPerYear" value="100000" min="0" step="10000">
+                                    </div>
+                                    <div class="fg">
+                                        <label><span data-i18n="lbl_cup_price">Price per Cup ($)</span></label>
+                                        <input type="number" id="cupPrice" value="5" min="0" step="0.5">
+                                    </div>
+                                </div>
+                                <div class="frow">
+                                    <div class="fg">
+                                        <label>
+                                            <span data-i18n="lbl_cup_pct">Company Cup %</span>
+                                            <span class="tip-wrap" data-tip="tip_cup_pct"><span
+                                                    class="tip-icon">?</span></span>
+                                        </label>
+                                        <input type="number" id="cupPct" value="15" min="0" max="100" step="1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Reuse Sidebar Summary via CSS or JS mirroring later if needed, but keeping simple layout -->
+                </div>
+            </div>
+
+            <!-- TAB: NFT -->
+            <div id="tab-nft" class="tab-pane">
+                <div class="layout-2col">
+                    <div class="input-col">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title" data-i18n="nft_title">🖼️ NFT Revenue</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="block-hint">
+                                    <span class="block-hint-icon">💎</span>
+                                    <div>
+                                        <strong data-i18n="hint_nft_title">Web3 Integration</strong>
+                                        <span data-i18n="hint_nft_body"> — Model revenue from primary mints, secondary
+                                            market royalties, and quick-sale items. Set the average prices and
+                                            commission percentages.</span>
+                                    </div>
+                                </div>
+
+                                <h3 class="section-sub" data-i18n="sub_primary">Primary Sales</h3>
+                                <div class="frow3">
+                                    <div class="fg"><label><span data-i18n="lbl_nft_qty">Quantity</span></label><input
+                                            type="number" id="nftPrimaryQty" value="1000"></div>
+                                    <div class="fg"><label><span data-i18n="lbl_nft_price">Avg Price
+                                                ($)</span></label><input type="number" id="nftPrimaryPrice" value="100">
+                                    </div>
+                                    <div class="fg"><label><span data-i18n="lbl_nft_comm">Comm (%)</span></label><input
+                                            type="number" id="nftPrimaryComm" value="5" step="0.5"></div>
+                                </div>
+
+                                <h3 class="section-sub mt-4" data-i18n="sub_secondary">Secondary Market (Royalties)</h3>
+                                <div class="frow3">
+                                    <div class="fg"><label><span
+                                                data-i18n="lbl_nft_tx">Transactions</span></label><input type="number"
+                                            id="nftSecondaryTx" value="500"></div>
+                                    <div class="fg"><label><span data-i18n="lbl_nft_price">Avg Price
+                                                ($)</span></label><input type="number" id="nftSecondaryPrice"
+                                            value="150"></div>
+                                    <div class="fg"><label><span data-i18n="lbl_nft_royalty">Royalty
+                                                (%)</span></label><input type="number" id="nftSecondaryRoyalty"
+                                            value="2.5" step="0.1"></div>
+                                </div>
+
+                                <h3 class="section-sub mt-4" data-i18n="sub_quick">Quick/Promo Sales</h3>
+                                <div class="frow3">
+                                    <div class="fg"><label><span data-i18n="lbl_nft_qty">Quantity</span></label><input
+                                            type="number" id="nftQuickQty" value="200"></div>
+                                    <div class="fg"><label><span data-i18n="lbl_nft_price">Avg Price
+                                                ($)</span></label><input type="number" id="nftQuickPrice" value="200">
+                                    </div>
+                                    <div class="fg"><label><span data-i18n="lbl_nft_comm">Comm (%)</span></label><input
+                                            type="number" id="nftQuickComm" value="3" step="0.5"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: RESULTS -->
+            <div id="tab-results" class="tab-pane">
+
+                <!-- Costs Slider Area -->
+                <div class="card mb-4">
+                    <div class="card-header"><span class="card-title" data-i18n="costs_title">💸 Operational Costs &
+                            Setup</span></div>
+                    <div class="card-body">
+                        <div class="slider-row">
+                            <label><span data-i18n="lbl_costs">Est. Operational Costs (%)</span>: <strong
+                                    id="costValDisplay" class="c-pink">30%</strong></label>
+                            <input type="range" id="costsPct" min="0" max="80" value="30" class="wide-slider">
+                            <div class="formula-note" data-i18n="lbl_costs_note">Used to calculate net ROI after gross
+                                revenue.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Area -->
+                <div class="charts-grid">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title" data-i18n="chart_revenue">Revenue
+                                Sources</span></div>
+                        <div class="card-body chart-body"><canvas id="revenuePieChart"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title" data-i18n="chart_sensitivity">Yield
+                                Sensitivity ($)</span></div>
+                        <div class="card-body chart-body"><canvas id="yieldLineChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Revenue Table -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <span class="card-title" data-i18n="table_breakdown">Detailed Revenue Breakdown</span>
+                        <button class="btn btn-sm btn-outline" id="exportCsvBtn">⬇ CSV</button>
+                    </div>
+                    <div class="card-body p0">
+                        <div id="revenueTableContainer" class="tbl-wrap">
+                            <div class="empty-state" style="padding:40px" data-i18n="captable_empty">Run a calculation
+                                first.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SDK & Scripts -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="coffee_charts.js"></script>
+    <script src="coffee.js"></script>
+</body>
+
+</html>

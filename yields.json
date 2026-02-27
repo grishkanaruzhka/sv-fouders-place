@@ -1,0 +1,18 @@
+{
+    "Georgia": {
+        "Arabica": 1.8,
+        "Liberica": 1.5
+    },
+    "Ethiopia": {
+        "Yirgacheffe": 2.5,
+        "Sidamo": 2.2
+    },
+    "Colombia": {
+        "Caturra": 2.0,
+        "Castillo": 2.3
+    },
+    "Kenya": {
+        "SL34": 2.1,
+        "Ruiru11": 2.4
+    }
+}

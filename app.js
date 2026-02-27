@@ -665,6 +665,28 @@ function applyI18n() {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    // Attempt true fullscreen (available in newer Telegram versions)
+    try {
+      if (tg.requestFullscreen) {
+        tg.requestFullscreen();
+      }
+    } catch (e) {
+      console.log('Fullscreen not supported:', e);
+    }
+
+    // Default theme based on Telegram WebApp
+    if (tg.colorScheme) {
+      state.theme = tg.colorScheme;
+      document.documentElement.setAttribute('data-theme', state.theme);
+      document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀️';
+    }
+  }
+
   _initGlobalTip();
   applyI18n();
 

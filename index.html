@@ -22,10 +22,32 @@
         <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div>
         <div class="drawer" id="appDrawer">
             <div class="drawer-header">
-                <span class="drawer-title">Menu</span>
+                <div class="logo">
+                    <!-- SAFE+ Logo: hexagon badge with + -->
+                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="lgDrawer1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#7c6dff" />
+                                <stop offset="100%" stop-color="#00d2ff" />
+                            </linearGradient>
+                            <linearGradient id="lgDrawer2" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#7c6dff" stop-opacity="0.18" />
+                                <stop offset="100%" stop-color="#00d2ff" stop-opacity="0.08" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Hexagon -->
+                        <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lgDrawer2)"
+                            stroke="url(#lgDrawer1)" stroke-width="1.8" />
+                        <!-- Plus sign (horizontal) -->
+                        <rect x="10.5" y="16.2" width="15" height="3.6" rx="1.8" fill="url(#lgDrawer1)" />
+                        <!-- Plus sign (vertical) -->
+                        <rect x="16.2" y="10.5" width="3.6" height="15" rx="1.8" fill="url(#lgDrawer1)" />
+                    </svg>
+                    <span class="logo-text">SAFE<span class="logo-accent">+</span></span>
+                </div>
                 <button class="drawer-close" onclick="closeMenu()">✕</button>
             </div>
-            <div class="drawer-section-label">Tools</div>
+            <div class="drawer-section-label">Calculators</div>
             <button class="drawer-item active" onclick="closeMenu()">
                 <span class="drawer-item-icon">➕</span>
                 <div class="drawer-item-info">
@@ -34,13 +56,12 @@
                 </div>
                 <span class="drawer-item-badge">Open</span>
             </button>
-            <button class="drawer-item disabled">
-                <span class="drawer-item-icon">📊</span>
+            <button class="drawer-item" onclick="window.location.href='coffee.html'">
+                <span class="drawer-item-icon">☕</span>
                 <div class="drawer-item-info">
-                    <div class="drawer-item-name">Cap Raise Planner</div>
-                    <div class="drawer-item-desc">Coming soon</div>
+                    <div class="drawer-item-name">Coffee Farm</div>
+                    <div class="drawer-item-desc">Yield & NFT revenue</div>
                 </div>
-                <span class="drawer-item-badge soon">Soon</span>
             </button>
             <button class="drawer-item disabled">
                 <span class="drawer-item-icon">🏦</span>
@@ -171,7 +192,7 @@
                                 <button class="btn btn-sm btn-outline" id="addSafeBtn">+ <span data-i18n="add_safe">Add
                                         SAFE</span></button>
                             </div>
-                            <div id="safesList" class="items-list">
+                            <div style="padding: 16px 20px 0 20px;">
                                 <div class="block-hint block-hint-inline">
                                     <span class="block-hint-icon">💡</span>
                                     <div>
@@ -182,6 +203,8 @@
                                             tranche.</span>
                                     </div>
                                 </div>
+                            </div>
+                            <div id="safesList" class="items-list">
                                 <div class="empty-state" data-i18n="no_safes">No SAFEs yet. Add one above.</div>
                             </div>
                         </div>
@@ -195,7 +218,7 @@
                                 <button class="btn btn-sm btn-outline" id="addRoundBtn">+ <span
                                         data-i18n="add_round">Add Round</span></button>
                             </div>
-                            <div id="roundsList" class="items-list">
+                            <div style="padding: 16px 20px 0 20px;">
                                 <div class="block-hint block-hint-inline">
                                     <span class="block-hint-icon">💡</span>
                                     <div>
@@ -206,6 +229,8 @@
                                             amount.</span>
                                     </div>
                                 </div>
+                            </div>
+                            <div id="roundsList" class="items-list">
                                 <div class="empty-state" data-i18n="no_rounds">No priced rounds yet.</div>
                             </div>
                         </div>
@@ -416,6 +441,7 @@
         </main>
     </div>
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="charts.js"></script>
     <script src="app.js"></script>
 </body>
