@@ -4,26 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAFE+ — Equity & Dilution Modeling</title>
+    <title>SV Founders Tools</title>
     <meta name="description"
-        content="Professional SAFE note calculator for startup equity and dilution modeling. Supports multiple SAFEs, priced rounds, cap table visualization.">
+        content="A suite of tools for startup founders including equity modeling and revenue calculators.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .hub-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .hub-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px var(--shadow-color);
+            border-color: #7c6dff;
+        }
+
+        .hub-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7c6dff, #00d2ff);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .hub-card:hover::before {
+            opacity: 1;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
-
         <!-- MENU DRAWER OVERLAY -->
         <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div>
         <div class="drawer" id="appDrawer">
             <div class="drawer-header">
                 <div class="logo">
-                    <!-- SAFE+ Logo: hexagon badge with + -->
                     <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <linearGradient id="lgDrawer1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
@@ -35,20 +63,17 @@
                                 <stop offset="100%" stop-color="#00d2ff" stop-opacity="0.08" />
                             </linearGradient>
                         </defs>
-                        <!-- Hexagon -->
                         <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lgDrawer2)"
                             stroke="url(#lgDrawer1)" stroke-width="1.8" />
-                        <!-- Plus sign (horizontal) -->
                         <rect x="10.5" y="16.2" width="15" height="3.6" rx="1.8" fill="url(#lgDrawer1)" />
-                        <!-- Plus sign (vertical) -->
                         <rect x="16.2" y="10.5" width="3.6" height="15" rx="1.8" fill="url(#lgDrawer1)" />
                     </svg>
-                    <span class="logo-text">SAFE<span class="logo-accent">+</span></span>
+                    <span class="logo-text">SV<span class="logo-accent">Tools</span></span>
                 </div>
                 <button class="drawer-close" onclick="closeMenu()">✕</button>
             </div>
             <div class="drawer-section-label">Calculators</div>
-            <button class="drawer-item active" onclick="closeMenu()">
+            <button class="drawer-item" onclick="window.location.href='safe.html'">
                 <span class="drawer-item-icon">
                     <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lgDrawer2)"
@@ -61,7 +86,6 @@
                     <div class="drawer-item-name">SAFE+</div>
                     <div class="drawer-item-desc">Equity & dilution modeling</div>
                 </div>
-                <span class="drawer-item-badge">Open</span>
             </button>
             <button class="drawer-item" onclick="window.location.href='coffee.html'">
                 <span class="drawer-item-icon">
@@ -84,39 +108,14 @@
         <!-- HEADER -->
         <header class="header">
             <div class="logo">
-                <!-- SAFE+ Logo: hexagon badge with + -->
                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="lg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-                            <stop offset="0%" stop-color="#7c6dff" />
-                            <stop offset="100%" stop-color="#00d2ff" />
-                        </linearGradient>
-                        <linearGradient id="lg2" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-                            <stop offset="0%" stop-color="#7c6dff" stop-opacity="0.18" />
-                            <stop offset="100%" stop-color="#00d2ff" stop-opacity="0.08" />
-                        </linearGradient>
-                    </defs>
-                    <!-- Hexagon -->
-                    <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lg2)" stroke="url(#lg1)"
-                        stroke-width="1.8" />
-                    <!-- Plus sign (horizontal) -->
-                    <rect x="10.5" y="16.2" width="15" height="3.6" rx="1.8" fill="url(#lg1)" />
-                    <!-- Plus sign (vertical) -->
-                    <rect x="16.2" y="10.5" width="3.6" height="15" rx="1.8" fill="url(#lg1)" />
+                    <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lgDrawer2)"
+                        stroke="url(#lgDrawer1)" stroke-width="1.8" />
+                    <rect x="10.5" y="16.2" width="15" height="3.6" rx="1.8" fill="url(#lgDrawer1)" />
+                    <rect x="16.2" y="10.5" width="3.6" height="15" rx="1.8" fill="url(#lgDrawer1)" />
                 </svg>
-                <span class="logo-text">SAFE<span class="logo-accent">+</span></span>
+                <span class="logo-text">SV<span class="logo-accent">Tools</span></span>
             </div>
-
-            <nav class="tab-nav" id="tabNav">
-                <button class="tab-btn active" data-tab="input"><span class="ti">⚙️</span><span
-                        data-i18n="tab_input">Setup</span></button>
-                <button class="tab-btn" data-tab="captable"><span class="ti">📋</span><span data-i18n="tab_captable">Cap
-                        Table</span></button>
-                <button class="tab-btn" data-tab="charts"><span class="ti">📈</span><span
-                        data-i18n="tab_charts">Charts</span></button>
-                <button class="tab-btn" data-tab="scenarios"><span class="ti">🎯</span><span
-                        data-i18n="tab_scenarios">Scenarios</span></button>
-            </nav>
 
             <div class="header-actions">
                 <button class="hbtn" id="langBtn">EN</button>
@@ -130,319 +129,133 @@
         </header>
 
 
-        <!-- MAIN -->
-        <main class="mc">
+        <!-- MAIN (Hub Cards) -->
+        <main class="mc"
+            style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 140px);">
+            <div style="width: 100%; max-width: 900px; padding: 20px;">
+                <h2 style="margin-bottom: 32px; color: var(--text-main); font-weight: 600; text-align: center; font-size: 28px;"
+                    data-i18n="hub_title">Select a Tool</h2>
 
-            <!-- TAB: SETUP -->
-            <div id="tab-input" class="tab-pane active">
-                <div class="layout-2col">
-                    <div class="input-col">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
 
-                        <!-- Founders -->
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="card-title" data-i18n="founders_title">🏢 Founders & Initial Setup</span>
+                    <!-- SAFE+ Card -->
+                    <div class="card hub-card" onclick="window.location.href='safe.html'">
+                        <div class="card-body"
+                            style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 48px 32px;">
+                            <div
+                                style="margin-bottom: 24px; padding: 20px; background: rgba(124, 109, 255, 0.05); border-radius: 50%;">
+                                <svg width="64" height="64" viewBox="0 0 36 36" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lgDrawer2)"
+                                        stroke="url(#lgDrawer1)" stroke-width="1.8" />
+                                    <rect x="10.5" y="16.2" width="15" height="3.6" rx="1.8" fill="url(#lgDrawer1)" />
+                                    <rect x="16.2" y="10.5" width="3.6" height="15" rx="1.8" fill="url(#lgDrawer1)" />
+                                </svg>
                             </div>
-                            <div class="card-body">
-                                <div class="block-hint">
-                                    <span class="block-hint-icon">👋</span>
-                                    <div>
-                                        <strong data-i18n="hint_founders_title">Start here</strong>
-                                        <span data-i18n="hint_founders_body"> — enter how many shares your company has
-                                            issued and whether you have an employee option pool. These numbers form the
-                                            base of your cap table before any investors.</span>
-                                    </div>
-                                </div>
-                                <div class="frow">
-                                    <div class="fg">
-                                        <label>
-                                            <span data-i18n="lbl_founder_shares">Founder Shares</span>
-                                            <span class="tip-wrap" data-tip="tip_founder_shares"><span
-                                                    class="tip-icon">?</span></span>
-                                        </label>
-                                        <input type="number" id="founderShares" value="10000000" min="1" step="100000">
-                                    </div>
-                                    <div class="fg" id="optionPoolGroup">
-                                        <label>
-                                            <span data-i18n="lbl_option_pool">Initial Option Pool %</span>
-                                            <span class="tip-wrap" data-tip="tip_option_pool"><span
-                                                    class="tip-icon">?</span></span>
-                                        </label>
-                                        <input type="number" id="optionPoolPct" value="10" min="0" max="50" step="0.5">
-                                    </div>
-                                </div>
-                                <!-- Option Pool Toggle -->
-                                <div class="toggle-row">
-                                    <input type="checkbox" class="pool-toggle" id="includeOptionPool" checked>
-                                    <label for="includeOptionPool" class="pool-toggle-label">
-                                        <span data-i18n="lbl_include_pool">Include Option Pool</span>
-                                        <span class="tip-wrap" data-tip="tip_include_pool"><span
-                                                class="tip-icon">?</span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SAFEs -->
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="card-title" data-i18n="safes_title">🔐 SAFE Notes</span>
-                                <span class="tip-wrap" data-tip="tip_block_safes"><span class="tip-icon">?</span></span>
-                                <button class="btn btn-sm btn-outline" id="addSafeBtn">+ <span data-i18n="add_safe">Add
-                                        SAFE</span></button>
-                            </div>
-                            <div style="padding: 16px 20px 0 20px;">
-                                <div class="block-hint block-hint-inline">
-                                    <span class="block-hint-icon">💡</span>
-                                    <div>
-                                        <strong data-i18n="hint_safes_title">What is a SAFE?</strong>
-                                        <span data-i18n="hint_safes_body"> — A SAFE (Simple Agreement for Future Equity)
-                                            is a loan-free investment note. The investor gives you money now and gets
-                                            shares later when you raise a priced round. Add one SAFE per investor or
-                                            tranche.</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="safesList" class="items-list">
-                                <div class="empty-state" data-i18n="no_safes">No SAFEs yet. Add one above.</div>
-                            </div>
-                        </div>
-
-                        <!-- Priced Rounds -->
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="card-title" data-i18n="rounds_title">💰 Priced Rounds</span>
-                                <span class="tip-wrap" data-tip="tip_block_rounds"><span
-                                        class="tip-icon">?</span></span>
-                                <button class="btn btn-sm btn-outline" id="addRoundBtn">+ <span
-                                        data-i18n="add_round">Add Round</span></button>
-                            </div>
-                            <div style="padding: 16px 20px 0 20px;">
-                                <div class="block-hint block-hint-inline">
-                                    <span class="block-hint-icon">💡</span>
-                                    <div>
-                                        <strong data-i18n="hint_rounds_title">What is a Priced Round?</strong>
-                                        <span data-i18n="hint_rounds_body"> — A priced round (Series A, B…) is when
-                                            investors buy shares at a fixed price. This is also when all your SAFEs
-                                            convert to equity. Enter the pre-money valuation and the new investment
-                                            amount.</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="roundsList" class="items-list">
-                                <div class="empty-state" data-i18n="no_rounds">No priced rounds yet.</div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Quick Summary + Formulas -->
-                    <div class="summary-col">
-                        <div class="card sticky-card">
-                            <div class="card-header">
-                                <span class="card-title" data-i18n="summary_title">📊 Quick Summary</span>
-                                <span class="tip-wrap" data-tip="tip_block_summary"><span
-                                        class="tip-icon">?</span></span>
-                                <button class="btn btn-sm btn-primary" id="calcBtn"
-                                    data-i18n="calculate">Calculate</button>
-                            </div>
-                            <div id="quickSummary" class="card-body">
-                                <div class="empty-state" data-i18n="summary_hint">Fill in your data and click Calculate.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- FORMULAS / HOW IT WORKS -->
-                        <div class="card" id="formulasCard">
-                            <div class="card-header collapsible-header" onclick="toggleFormulas()" id="formulasToggle">
-                                <span class="card-title" data-i18n="formulas_title">📐 How It's Calculated</span>
-                                <span class="tip-wrap" data-tip="tip_block_formulas"><span
-                                        class="tip-icon">?</span></span>
-                                <span class="collapse-icon" id="formulasIcon">▼</span>
-                            </div>
-                            <div class="card-body" id="formulasBody">
-
-                                <!-- Process flow -->
-                                <div class="process-flow">
-                                    <div class="pf-step">
-                                        <div class="pf-num">1</div>
-                                        <div class="pf-label" data-i18n="pf_founders">Set Founders</div>
-                                    </div>
-                                    <div class="pf-arrow">→</div>
-                                    <div class="pf-step">
-                                        <div class="pf-num">2</div>
-                                        <div class="pf-label" data-i18n="pf_safe">Add SAFEs</div>
-                                    </div>
-                                    <div class="pf-arrow">→</div>
-                                    <div class="pf-step">
-                                        <div class="pf-num">3</div>
-                                        <div class="pf-label" data-i18n="pf_round">Priced Round</div>
-                                    </div>
-                                    <div class="pf-arrow">→</div>
-                                    <div class="pf-step pf-step-ok">
-                                        <div class="pf-num">✓</div>
-                                        <div class="pf-label" data-i18n="pf_result">Cap Table</div>
-                                    </div>
-                                </div>
-
-                                <!-- Formula grid (single column to fit sidebar) -->
-                                <div class="formula-grid formula-grid-1col">
-                                    <div class="formula-section">
-                                        <div class="fsec-title">🔐 <span data-i18n="fsec_safe">SAFE Conversion</span>
-                                        </div>
-                                        <div class="formula-item">
-                                            <div class="formula-name" data-i18n="fn_safe_price">SAFE Price (lower wins)
-                                            </div>
-                                            <div class="formula-eq">min( Cap ÷ Shares, PPS × (1−Disc%) )</div>
-                                            <div class="formula-note" data-i18n="fn_safe_price_note">Lower price = more
-                                                shares for investor</div>
-                                        </div>
-                                        <div class="formula-item">
-                                            <div class="formula-name" data-i18n="fn_safe_shares">SAFE Shares</div>
-                                            <div class="formula-eq">Amount ÷ SAFE Price</div>
-                                        </div>
-                                        <div class="formula-item">
-                                            <div class="formula-name" data-i18n="fn_post_safe">Post-$ SAFE Ownership
-                                            </div>
-                                            <div class="formula-eq">Amount ÷ Post-money Cap</div>
-                                            <div class="formula-note" data-i18n="fn_post_safe_note">Fixed % locked at
-                                                investment</div>
-                                        </div>
-                                    </div>
-                                    <div class="formula-section">
-                                        <div class="fsec-title">💰 <span data-i18n="fsec_round">Priced Round</span>
-                                        </div>
-                                        <div class="formula-item">
-                                            <div class="formula-name" data-i18n="fn_pps">Price Per Share (PPS)</div>
-                                            <div class="formula-eq">Pre-money Val ÷ Pre-$ Shares</div>
-                                        </div>
-                                        <div class="formula-item">
-                                            <div class="formula-name" data-i18n="fn_new_shares">New Investor Shares
-                                            </div>
-                                            <div class="formula-eq">New Money ÷ PPS</div>
-                                        </div>
-                                        <div class="formula-item">
-                                            <div class="formula-name" data-i18n="fn_postmoney">Post-money Valuation
-                                            </div>
-                                            <div class="formula-eq">Pre-money + New Money</div>
-                                        </div>
-                                    </div>
-                                    <div class="formula-section">
-                                        <div class="fsec-title">📉 <span data-i18n="fsec_dilution">Dilution</span></div>
-                                        <div class="formula-item">
-                                            <div class="formula-name" data-i18n="fn_founder_pct">Founder Ownership %
-                                            </div>
-                                            <div class="formula-eq">Founder Shares ÷ Total × 100</div>
-                                        </div>
-                                        <div class="formula-item">
-                                            <div class="formula-name" data-i18n="fn_pool">Option Pool (pre-money)</div>
-                                            <div class="formula-eq">Total × Pool% ÷ (1 − Pool%)</div>
-                                            <div class="formula-note" data-i18n="fn_pool_note">Dilutes founders, not
-                                                investors</div>
-                                        </div>
-                                        <div class="formula-item">
-                                            <div class="formula-name" data-i18n="fn_down">Down Round</div>
-                                            <div class="formula-eq">Cap is NOT a price floor</div>
-                                            <div class="formula-note" data-i18n="fn_down_note">Discount wins if Pre-$
-                                                &lt; Cap</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <h3
+                                style="font-size: 22px; font-weight: 600; color: var(--text-main); margin-bottom: 12px;">
+                                SAFE+</h3>
+                            <p style="color: var(--text-muted); font-size: 15px; line-height: 1.6;">Equity & dilution
+                                modeling tailored for startup founders and investors.</p>
                         </div>
                     </div>
+
+                    <!-- Coffee Farm Card -->
+                    <div class="card hub-card" onclick="window.location.href='coffee.html'">
+                        <div class="card-body"
+                            style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 48px 32px;">
+                            <div
+                                style="margin-bottom: 24px; padding: 20px; background: rgba(124, 109, 255, 0.05); border-radius: 50%;">
+                                <svg width="64" height="64" viewBox="0 0 36 36" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 2.5 L32 10 L32 26 L18 33.5 L4 26 L4 10 Z" fill="url(#lgDrawer2)"
+                                        stroke="url(#lgDrawer1)" stroke-width="1.8" />
+                                    <path d="M14 10 C 22 10, 26 14, 26 22 C 18 26, 10 22, 14 10 Z"
+                                        fill="url(#lgDrawer1)" />
+                                    <path d="M16 12 C 20 16, 20 20, 20 20" stroke="#0d0f1a" stroke-width="2"
+                                        stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <h3
+                                style="font-size: 22px; font-weight: 600; color: var(--text-main); margin-bottom: 12px;">
+                                Coffee Farm</h3>
+                            <p style="color: var(--text-muted); font-size: 15px; line-height: 1.6;">Interactive yield
+                                calculations and NFT revenue forecasting.</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-
-            <!-- TAB: CAP TABLE -->
-            <div id="tab-captable" class="tab-pane">
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title" data-i18n="captable_title">📋 Capitalization Table</span>
-                        <div class="row-gap8">
-                            <button class="btn btn-sm btn-outline" id="exportCsvBtn">⬇ CSV</button>
-                        </div>
-                    </div>
-                    <div class="card-body p0">
-                        <div id="capTableContainer" class="tbl-wrap">
-                            <div class="empty-state" style="padding:40px" data-i18n="captable_empty">Run a calculation
-                                first.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: CHARTS -->
-            <div id="tab-charts" class="tab-pane">
-                <div class="charts-grid">
-                    <div class="card">
-                        <div class="card-header"><span class="card-title" data-i18n="chart_ownership">Ownership
-                                Distribution</span></div>
-                        <div class="card-body chart-body"><canvas id="ownershipChart"></canvas></div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header"><span class="card-title" data-i18n="chart_dilution">Dilution Over
-                                Rounds</span></div>
-                        <div class="card-body chart-body"><canvas id="dilutionChart"></canvas></div>
-                    </div>
-                    <div class="card chart-full">
-                        <div class="card-header">
-                            <span class="card-title" data-i18n="chart_sensitivity">Sensitivity: Founder % vs Cap</span>
-                        </div>
-                        <div class="card-body chart-body-wide"><canvas id="sensitivityChart"></canvas></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: SCENARIOS -->
-            <div id="tab-scenarios" class="tab-pane">
-                <div class="scenarios-grid">
-                    <div class="scenario-card" data-scenario="single">
-                        <div class="sc-icon">1️⃣</div>
-                        <div class="sc-info">
-                            <h3 data-i18n="s1_title">Single SAFE → Series A</h3>
-                            <p data-i18n="s1_desc">$500K SAFE, $5M cap, 20% discount → $3M Series A at $10M pre-money
-                            </p>
-                        </div>
-                        <button class="btn btn-primary btn-sm" data-i18n="load_btn">Load</button>
-                    </div>
-                    <div class="scenario-card" data-scenario="multi">
-                        <div class="sc-icon">🔢</div>
-                        <div class="sc-info">
-                            <h3 data-i18n="s2_title">Multiple SAFEs (Pre + Post)</h3>
-                            <p data-i18n="s2_desc">$250K pre $3M cap + $500K post $6M cap → $5M Series A at $15M pre</p>
-                        </div>
-                        <button class="btn btn-primary btn-sm" data-i18n="load_btn">Load</button>
-                    </div>
-                    <div class="scenario-card" data-scenario="down">
-                        <div class="sc-icon">📉</div>
-                        <div class="sc-info">
-                            <h3 data-i18n="s3_title">Down Round</h3>
-                            <p data-i18n="s3_desc">$1M SAFE at $8M cap → Series A at $5M pre (cap > pre-money, discount
-                                wins)</p>
-                        </div>
-                        <button class="btn btn-primary btn-sm" data-i18n="load_btn">Load</button>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header"><span class="card-title" data-i18n="whatif_title">🔮 What-If: Founder % at
-                            Different Caps</span></div>
-                    <div class="card-body p0">
-                        <div id="whatifTable" class="tbl-wrap">
-                            <div class="empty-state" style="padding:40px" data-i18n="whatif_hint">Load a scenario or
-                                calculate to see what-if analysis.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="charts.js"></script>
-    <script src="app.js"></script>
+    <script>
+        const tg = window.Telegram.WebApp;
+        document.addEventListener('DOMContentLoaded', () => {
+            if (tg) {
+                tg.ready();
+                tg.expand();
+                if (tg.requestFullscreen) {
+                    try { tg.requestFullscreen(); } catch (e) { console.log('Fullscreen API err:', e); }
+                }
+
+                // Theme syncing
+                const setTheme = () => {
+                    const params = tg.themeParams;
+                    if (params.bg_color) {
+                        if (tg.colorScheme === 'light') {
+                            document.documentElement.setAttribute('data-theme', 'light');
+                            document.getElementById('themeBtn').textContent = '☀️';
+                        } else {
+                            document.documentElement.setAttribute('data-theme', 'dark');
+                            document.getElementById('themeBtn').textContent = '🌙';
+                        }
+                    }
+                };
+                setTheme();
+                tg.onEvent('themeChanged', setTheme);
+            }
+        });
+
+        const drawer = document.getElementById('appDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+        function openMenu() {
+            drawer.classList.add('open');
+            overlay.classList.add('show');
+        }
+        function closeMenu() {
+            drawer.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        // Simple manual theme toggle for Web
+        document.getElementById('themeBtn').addEventListener('click', () => {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            if (current === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                document.getElementById('themeBtn').textContent = '☀️';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                document.getElementById('themeBtn').textContent = '🌙';
+            }
+        });
+
+        // Simple English dummy toggle for Hub
+        document.getElementById('langBtn').addEventListener('click', () => {
+            const btn = document.getElementById('langBtn');
+            const title = document.querySelector('[data-i18n="hub_title"]');
+            if (btn.textContent === 'EN') {
+                btn.textContent = 'RU';
+                title.textContent = 'Выберите инструмент';
+            } else {
+                btn.textContent = 'EN';
+                title.textContent = 'Select a Tool';
+            }
+        });
+    </script>
 </body>
 
 </html>
