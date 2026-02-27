@@ -72,6 +72,13 @@ const i18n = {
     tip_block_rounds: 'A priced round (Series A, B…) is when shares are sold at a fixed price per share. This is when SAFEs convert to equity.',
     tip_block_summary: 'Live summary of the final cap table after all SAFEs convert and all rounds close. Updated each time you click Calculate.',
     tip_block_formulas: 'Step-by-step breakdown of how all calculations work: SAFE conversion price, new investor shares, option pool dilution, and founder ownership.',
+    // Block hints
+    hint_founders_title: 'Start here',
+    hint_founders_body: ' — enter how many shares your company has issued to founders and whether you have an employee stock option pool (ESOP). The standard founding share count is 10,000,000. These numbers form the baseline of your cap table — everything else is calculated relative to them.',
+    hint_safes_title: 'What is a SAFE?',
+    hint_safes_body: ' — A SAFE (Simple Agreement for Future Equity) is money an investor gives you today in exchange for shares in a future priced round. No interest, no fixed repayment. Add one row per investor. Key fields: ① Amount invested ② Valuation Cap (max price they convert at) ③ Discount % (optional price reduction bonus).',
+    hint_rounds_title: 'What is a Priced Round?',
+    hint_rounds_body: ' — A priced round (Series A, B…) sets an official share price. At this moment all SAFEs convert to equity. Enter: ① Pre-money valuation (agreed company value before new money) ② New Money (how much is being invested) ③ Option Pool top-up if your term sheet requires one.',
   },
   ru: {
     tab_input: 'Настройки', tab_captable: 'Кап. Таблица', tab_charts: 'Графики', tab_scenarios: 'Сценарии',
@@ -131,6 +138,13 @@ const i18n = {
     tip_block_rounds: 'Прайсед раунд (Series A, B…) — когда акции продаются по фиксированной цене. Именно здесь SAFE конвертируются в акции.',
     tip_block_summary: 'Итоговая сводка кап. таблицы после конвертации всех SAFE и закрытия раундов. Обновляется при нажатии «Рассчитать».',
     tip_block_formulas: 'Пошаговое объяснение всех расчётов: цена конвертации SAFE, акции нового инвестора, разводнение пулом опционов и доля основателей.',
+    // Block hints
+    hint_founders_title: 'Начни здесь',
+    hint_founders_body: ' — введи сколько акций выпущено основателям и есть ли опционный пул для сотрудников. Стандартное количество акций при основании — 10 000 000. Эти числа — база кап. таблицы, всё остальное считается относительно них.',
+    hint_safes_title: 'Что такое SAFE?',
+    hint_safes_body: ' — SAFE (Simple Agreement for Future Equity) — это деньги от инвестора сейчас в обмен на акции в будущем раунде. Без процентов и погашений. Добавь одну строку на инвестора. Ключевые поля: ① Сумма ② Valuation Cap (максимальная оценка конверсии) ③ Discount % (скидка к цене раунда).',
+    hint_rounds_title: 'Что такой Priced Round?',
+    hint_rounds_body: ' — Прайсед раунд (Series A, B…) устанавливает официальную цену акции. Именно здесь все SAFE конвертируются. Укажи: ① Pre-money оценка (стоимость до денег) ② New Money (объём инвестиций) ③ Option Pool топ-ап, если требуют term sheetы.',
   }
 };
 const t = (k) => (i18n[state.lang][k] || k);

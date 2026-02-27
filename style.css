@@ -1195,6 +1195,36 @@ tr:hover td {
   transition: width .4s ease
 }
 
+/* ─── BLOCK HINTS ─────────────────────────────────────────────────────────── */
+.block-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(124, 109, 255, .07);
+  border: 1px solid rgba(124, 109, 255, .18);
+  border-radius: 8px;
+  padding: 11px 14px;
+  margin-bottom: 16px;
+  font-size: .8rem;
+  line-height: 1.6;
+  color: var(--t2);
+}
+
+.block-hint strong {
+  color: var(--a1);
+  font-weight: 700;
+}
+
+.block-hint-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.block-hint-inline {
+  margin: 12px 16px 8px;
+}
+
 /* ─── HAMBURGER BUTTON ───────────────────────────────────────────────────── */
 .menu-btn {
   display: flex;
