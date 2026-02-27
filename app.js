@@ -371,6 +371,7 @@ function renderCapTable() {
     }
 
     (stage.safeRows || []).forEach(s => {
+      // The percentage should be strictly against final totalShares.
       const sPct = (s.shares / stage.totalShares) * 100;
       const sVal = stage.pps ? s.shares * stage.pps : null;
       const tag = s.type === 'post' ? '<span class="tag tag-post">Post-$</span>' : '<span class="tag tag-pre">Pre-$</span>';
@@ -557,22 +558,47 @@ function renderWhatIf() {
 
   caps.forEach(cap => {
     html += `<tr><td class="td-mono c-gold">$${(cap / 1e6).toFixed(1)}M</td>`;
-    const tempSafes = safesToTest.map(s => ({ ...s, cap }));
-    const origSafes = state.safes;
-    state.safes = tempSafes;
+
+    // Deep clone safes to avoid reference corruption
+    const origSafes = JSON.stringify(state.safes);
+    state.safes = safesToTest.map(s => ({ ...s, cap: cap }));
+
     const tempResult = calcCapTable();
-    state.safes = origSafes;
+
+    // Restore original state deeply
+    state.safes = JSON.parse(origSafes);
+
     const last = tempResult[tempResult.length - 1];
-    tempSafes.forEach((s, i) => {
+    safesToTest.forEach(s => {
       const sr = (last.safeRows || []).find(r => r.id === s.id);
       html += `<td class="td-mono">${sr ? fmt.shares(sr.shares) : '—'}</td>`;
     });
+
     const fPct = (last.founderShares / last.totalShares) * 100;
     const color = fPct > 60 ? 'c-green' : fPct > 40 ? 'c-blue' : 'c-pink';
     html += `<td class="pct-col ${color}">${fPct.toFixed(1)}%</td></tr>`;
   });
   html += '</tbody></table>';
   document.getElementById('whatifTable').innerHTML = html;
+}
+
+// ─── INIT SCENARIO BUTTONS ─────────────────────────────────────────────────────
+function initScenarios() {
+  document.querySelectorAll('.scenario-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const p = card.dataset.scenario;
+      if (p && scenarios[p]) loadScenario(p);
+    });
+    // Also bind the Load button specifically
+    const btn = card.querySelector('button');
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const p = card.dataset.scenario;
+        if (p && scenarios[p]) loadScenario(p);
+      });
+    }
+  });
 }
 
 // ─── SCENARIOS ─────────────────────────────────────────────────────────────────
