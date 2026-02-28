@@ -196,16 +196,16 @@ function renderAdminPanel() {
             html += `<tr>
                 <td class="td-name">${country}</td>
                 <td>${sort}</td>
-                <td class="td-mono"><input type="number" step="0.01" value="${y}" onchange="updateAdminYield('${escC}', '${escS}', this.value)" style="width:80px; text-align:right;"></td>
+                <td class="td-mono"><input type="number" step="0.01" value="${y}" onchange="updateAdminYield('${escC}', '${escS}', this.value)" style="min-width:0; width:100%; max-width:80px; text-align:right;"></td>
                 <td style="text-align:right;"><button class="btn btn-sm btn-outline" style="color:var(--err);border-color:var(--err)" onclick="deleteAdminYield('${escC}', '${escS}')">✕</button></td>
             </tr>`;
         }
     }
 
     html += `<tr style="border-top: 1px solid var(--bdr);">
-        <td><input type="text" id="adminNewCountry" placeholder="Country" style="width:100%;"></td>
-        <td><input type="text" id="adminNewSort" placeholder="Sort" style="width:100%;"></td>
-        <td class="td-mono"><input type="number" step="0.01" id="adminNewYield" placeholder="0.20" style="width:80px; text-align:right;"></td>
+        <td><input type="text" id="adminNewCountry" placeholder="Country" style="min-width:0; width:100%;"></td>
+        <td><input type="text" id="adminNewSort" placeholder="Sort" style="min-width:0; width:100%;"></td>
+        <td class="td-mono"><input type="number" step="0.01" id="adminNewYield" placeholder="0.20" style="min-width:0; width:100%; max-width:80px; text-align:right;"></td>
         <td style="text-align:right;"><button class="btn btn-sm btn-primary" onclick="addAdminYield()">Add</button></td>
     </tr>`;
 

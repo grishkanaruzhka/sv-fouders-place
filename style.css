@@ -587,7 +587,10 @@ select option {
 
 /* TABLE */
 .tbl-wrap {
-  overflow-x: auto
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -1739,5 +1742,12 @@ body.is-tg .drawer {
 
   .pf-label {
     font-size: .55rem !important;
+  }
+
+  /* Compact tables for mobile */
+  .tbl-wrap table th,
+  .tbl-wrap table td {
+    padding: 8px 10px;
+    font-size: 0.75rem;
   }
 }
