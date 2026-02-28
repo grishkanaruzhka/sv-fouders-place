@@ -81,8 +81,13 @@ body {
   padding: 12px 24px;
 
   /* Telegram Safe Area and iOS Notch Support */
-  /* Fallbacks: JS injected, Telegram native content-safe injected, CSS env() */
-  padding-top: max(100px, calc(12px + var(--tg-safe-area-inset-top, var(--tg-content-safe-area-inset-top, env(safe-area-inset-top, 0px))))) !important;
+  /* Small padding by default for normal browsers */
+  padding-top: calc(12px + var(--tg-safe-area-inset-top, env(safe-area-inset-top, 0px)));
+}
+
+/* Telegram Mini App Padding Forced */
+body.is-tg .header {
+  padding-top: max(100px, calc(12px + var(--tg-safe-area-inset-top, env(safe-area-inset-top, 0px)))) !important;
 }
 
 [data-theme="light"] .header {
@@ -182,7 +187,12 @@ body {
   max-width: 1440px;
   margin: 0 auto;
   padding: 24px;
-  /* Bottom safe area in case of mobile nav bars + extra spacing */
+  /* Bottom safe area + natural spacing */
+  padding-bottom: calc(24px + var(--tg-safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
+}
+
+body.is-tg .mc {
+  /* Extra bottom padding in Telegram to clear its navigation */
   padding-bottom: calc(100px + var(--tg-safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
 }
 
@@ -1321,6 +1331,73 @@ tr:hover td {
   transition: all var(--dur);
 }
 
+/* CUSTOM CHECKBOX TOGGLES */
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bdr);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The checkmark (hidden by default) */
+.slider:after {
+  content: "";
+  display: none;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+/* Checked State */
+input:checked+.slider {
+  background: var(--a1);
+  border-color: var(--a1);
+}
+
+input:checked+.slider:after {
+  display: block;
+}
+
+/* Hover State */
+.switch:hover .slider {
+  border-color: var(--a1);
+}
+
+.disabled-section {
+  opacity: 0.4;
+  pointer-events: none;
+  filter: grayscale(80%);
+  transition: opacity 0.3s, filter 0.3s;
+}
+
 /* ─── DRAWER ─────────────────────────────────────────────────────────────── */
 .drawer-overlay {
   display: none;
@@ -1350,7 +1427,11 @@ tr:hover td {
   transform: translateX(100%);
   transition: transform .3s cubic-bezier(.4, 0, .2, 1);
   box-shadow: -8px 0 32px rgba(0, 0, 0, .4);
-  padding-top: max(100px, calc(12px + var(--tg-safe-area-inset-top, var(--tg-content-safe-area-inset-top, env(safe-area-inset-top, 0px)))));
+  padding-top: calc(12px + var(--tg-safe-area-inset-top, env(safe-area-inset-top, 0px)));
+}
+
+body.is-tg .drawer {
+  padding-top: max(100px, calc(12px + var(--tg-safe-area-inset-top, env(safe-area-inset-top, 0px))));
 }
 
 .drawer.open {

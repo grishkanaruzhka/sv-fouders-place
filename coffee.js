@@ -564,6 +564,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
         try { if (tg.requestFullscreen) tg.requestFullscreen(); } catch (e) { }
 
+        // Add is-tg class to body if we are actually inside Telegram
+        if (tg.platform && tg.platform !== 'unknown') {
+            document.body.classList.add('is-tg');
+        }
+
         // Bind safe area insets dynamically (Telegram 7.7+)
         function updateSafeArea() {
             let topInset = 0;

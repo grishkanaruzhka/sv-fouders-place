@@ -697,6 +697,11 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.expand();
     if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
 
+    // Add is-tg class to body if we are actually inside Telegram
+    if (tg.platform && tg.platform !== 'unknown') {
+      document.body.classList.add('is-tg');
+    }
+
     // Attempt true fullscreen (available in newer Telegram versions)
     try {
       if (tg.requestFullscreen) {
