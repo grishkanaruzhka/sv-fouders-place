@@ -301,10 +301,11 @@ function calculate() {
     const gross = grainRevenue + cupRevenue + totalNft;
     const costs = gross * (state.costsPct / 100);
     const net = gross - costs;
-    const apr = gross > 0 ? (net / gross * 100) : 0;
+    const marginValue = gross > 0 ? (gross - costs) / gross * 100 : 0;
+    const cupAprValue = grainRevenue > 0 ? (cupRevenue / grainRevenue * 100) : 0;
 
     state.results = {
-        grainRevenue, cupRevenue, nftPrim, nftSec, nftQuick, totalNft, gross, costs, net, yieldKg, totalTrees, apr
+        grainRevenue, cupRevenue, nftPrim, nftSec, nftQuick, totalNft, gross, costs, net, yieldKg, totalTrees, apr, cupAprValue, marginValue
     };
 
     renderSummary();
@@ -329,8 +330,9 @@ function renderSummary() {
     let html = `<div class="sum-grid">
     <div class="sum-item"><div class="sum-lbl">Gross Revenue</div><div class="sum-val c-green">${fmt.money(r.gross)}</div></div>
     <div class="sum-item"><div class="sum-lbl">Net (ROI)</div><div class="sum-val">${fmt.money(r.net)}</div></div>
-    <div class="sum-item"><div class="sum-lbl">APR / Margin</div><div class="sum-val c-a1">${r.apr.toFixed(1)}%</div></div>
-    <div class="sum-item"><div class="sum-lbl">Total Coffee Yield</div><div class="sum-val c-blue">${fmt.num(r.yieldKg)} kg</div></div>
+    <div class="sum-item"><div class="sum-lbl">Net Margin</div><div class="sum-val c-a1">${r.marginValue.toFixed(1)}%</div></div>
+    <div class="sum-item"><div class="sum-lbl">Cup Yield (APR)</div><div class="sum-val c-purple">+${r.cupAprValue.toFixed(1)}%</div></div>
+    <div class="sum-item"><div class="sum-lbl">Total Coffee</div><div class="sum-val c-blue">${fmt.num(r.yieldKg)} kg</div></div>
     <div class="sum-item"><div class="sum-lbl">NFT Revenue</div><div class="sum-val c-purple">${fmt.money(r.totalNft)}</div></div>
   </div>`;
     el.innerHTML = html;
@@ -473,13 +475,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         hint.appendChild(closeBtn);
 
         // Check if previously dismissed
-        if (localStorage.getItem(`dismissed_hint_${idx}`)) {
+        if (sessionStorage.getItem(`dismissed_hint_${idx}`)) {
             hint.style.display = 'none';
         }
 
         closeBtn.onclick = () => {
             hint.style.display = 'none';
-            localStorage.setItem(`dismissed_hint_${idx}`, 'true');
+            sessionStorage.setItem(`dismissed_hint_${idx}`, 'true');
         };
     });
 
