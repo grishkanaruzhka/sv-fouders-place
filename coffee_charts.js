@@ -68,16 +68,15 @@ function renderSensitivityLine(labelColor, gridColor) {
     const grossData = [];
     const netData = [];
 
-    const baseYield = state.yieldPerTree;
+    const baseYieldKg = state.results.yieldKg;
     const multi = [0.5, 0.75, 1.0, 1.25, 1.5]; // Test from -50% to +50% yield
 
     multi.forEach(m => {
-        const y = baseYield * m;
-        labels.push(`${y.toFixed(2)} kg`);
+        const y = baseYieldKg * m;
+        labels.push(`${y.toLocaleString('en-US', { maximumFractionDigits: 0 })} kg`);
 
         // Quick recalculation for sensitivity
-        const totalTrees = state.numFarms * state.treesPerFarm;
-        const gR = (totalTrees * y) * state.beanPrice;
+        const gR = y * state.beanPrice;
         const cR = state.cupsPerYear * state.cupPrice * (state.cupPct / 100);
         const nR = state.results.totalNft;
 

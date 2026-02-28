@@ -362,6 +362,10 @@ function switchTab(name) {
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+
+    const wrapper = document.getElementById('inputViewsWrapper');
+    if (wrapper) wrapper.style.display = (name === 'results') ? 'none' : '';
+
     if (name === 'results' && window.renderCoffeeCharts) window.renderCoffeeCharts();
 }
 
