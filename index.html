@@ -192,6 +192,7 @@
             if (tg) {
                 tg.ready();
                 tg.expand();
+                if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
                 if (tg.requestFullscreen) {
                     try { tg.requestFullscreen(); } catch (e) { console.log('Fullscreen API err:', e); }
                 }

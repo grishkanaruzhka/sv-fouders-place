@@ -484,6 +484,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+        if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
         try { if (tg.requestFullscreen) tg.requestFullscreen(); } catch (e) { }
 
         // Bind safe area insets dynamically (Telegram 7.7+)

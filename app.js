@@ -695,6 +695,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
+    if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
 
     // Attempt true fullscreen (available in newer Telegram versions)
     try {
