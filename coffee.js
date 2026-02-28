@@ -136,7 +136,6 @@ function loadYields() {
         "Colombia": { "Caturra": 2.0, "Castillo": 2.3 },
         "Kenya": { "SL34": 2.1, "Ruiru11": 2.4 }
     };
-    populateDropdowns();
 }
 
 // ─── FARM DYNAMICS ────────────────────────────────────────────────────────────
@@ -275,9 +274,10 @@ function calculate() {
     const gross = grainRevenue + cupRevenue + totalNft;
     const costs = gross * (state.costsPct / 100);
     const net = gross - costs;
+    const apr = gross > 0 ? (net / gross * 100) : 0;
 
     state.results = {
-        grainRevenue, cupRevenue, nftPrim, nftSec, nftQuick, totalNft, gross, costs, net, yieldKg, totalTrees
+        grainRevenue, cupRevenue, nftPrim, nftSec, nftQuick, totalNft, gross, costs, net, yieldKg, totalTrees, apr
     };
 
     renderSummary();
@@ -302,6 +302,7 @@ function renderSummary() {
     let html = `<div class="sum-grid">
     <div class="sum-item"><div class="sum-lbl">Gross Revenue</div><div class="sum-val c-green">${fmt.money(r.gross)}</div></div>
     <div class="sum-item"><div class="sum-lbl">Net (ROI)</div><div class="sum-val">${fmt.money(r.net)}</div></div>
+    <div class="sum-item"><div class="sum-lbl">APR / Margin</div><div class="sum-val c-a1">${r.apr.toFixed(1)}%</div></div>
     <div class="sum-item"><div class="sum-lbl">Total Coffee Yield</div><div class="sum-val c-blue">${fmt.num(r.yieldKg)} kg</div></div>
     <div class="sum-item"><div class="sum-lbl">NFT Revenue</div><div class="sum-val c-purple">${fmt.money(r.totalNft)}</div></div>
   </div>`;
@@ -324,6 +325,7 @@ function renderTable() {
       <tr style="font-weight:bold; border-top:1px solid var(--bdr);"><td class="c-green">${t('row_gross')}</td><td class="td-mono c-green">${fmt.money(r.gross)}</td><td>100%</td></tr>
       <tr style="color:var(--err);"><td>${t('row_costs')} (${state.costsPct}%)</td><td class="td-mono">-${fmt.money(r.costs)}</td><td>—</td></tr>
       <tr style="font-weight:bold; font-size:1.1em; border-top:1px solid var(--bdr);"><td>${t('row_net')}</td><td class="td-mono c-a1">${fmt.money(r.net)}</td><td>—</td></tr>
+      <tr style="font-weight:bold; color: var(--accent1);"><td>APR / Net Margin</td><td class="td-mono">${r.apr.toFixed(1)}%</td><td>—</td></tr>
     </tbody>
   </table>`;
     el.innerHTML = html;
