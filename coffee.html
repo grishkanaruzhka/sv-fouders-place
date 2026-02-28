@@ -323,6 +323,34 @@
             <!-- TAB: RESULTS -->
             <div id="tab-results" class="tab-pane">
 
+                <!-- Operational Costs -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header"><span class="card-title" data-i18n="costs_title">💸 Operational Costs &
+                            Breakdown</span></div>
+                    <div class="card-body">
+                        <div class="frow">
+                            <div class="fg">
+                                <label>
+                                    <span>Logistics (% of all Gross Revenue)</span>
+                                    <span class="val-display"><output id="costLogisticsPctVal"
+                                            class="c-a2">5%</output></span>
+                                </label>
+                                <input type="range" id="costLogisticsPct" min="0" max="50" step="1" value="5"
+                                    oninput="document.getElementById('costLogisticsPctVal').value=this.value+'%'">
+                            </div>
+                            <div class="fg">
+                                <label>
+                                    <span>Farmers Processing (% of Green Grain only)</span>
+                                    <span class="val-display"><output id="costFarmersPctVal"
+                                            class="c-a1">10%</output></span>
+                                </label>
+                                <input type="range" id="costFarmersPct" min="0" max="80" step="1" value="10"
+                                    oninput="document.getElementById('costFarmersPctVal').value=this.value+'%'">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Charts Area -->
                 <div class="charts-grid">
                     <div class="card">

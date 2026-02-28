@@ -9,6 +9,8 @@ const state = {
     cupsPerYear: 100000,
     cupPrice: 5,
     cupPct: 15,
+    costLogisticsPct: 5,
+    costFarmersPct: 10,
     nftPrimaryQty: 1000,
     nftPrimaryPrice: 100,
     nftPrimaryComm: 5,
@@ -233,13 +235,13 @@ window.addAdminYield = function () {
 };
 
 // ─── FARM DYNAMICS ────────────────────────────────────────────────────────────
-function addFarm(country = 'Colombia', sort = 'Bourbon', trees = 10000) {
+function addFarm(country = 'Colombia', sort = 'Bourbon', trees = 10000, price = 1000000) {
     const id = ++state._farmId;
     let yieldPerTree = 1.8;
     if (state.yields && state.yields[country] && state.yields[country][sort]) {
         yieldPerTree = state.yields[country][sort];
     }
-    state.farms.push({ id, country, sort, trees, yieldPerTree });
+    state.farms.push({ id, country, sort, trees, price, yieldPerTree });
     renderFarms();
     autoCalc();
 }
@@ -305,6 +307,12 @@ function renderFarms() {
                     <input type="number" value="${f.yieldPerTree}" min="0.01" step="0.01" oninput="updateFarm(${f.id}, 'yieldPerTree', +this.value)">
                 </div>
             </div>
+            <div class="frow">
+                <div class="fg" style="grid-column: 1 / -1;">
+                    <label><span>Farm Price & Investment ($)</span></label>
+                    <input type="number" value="${f.price}" min="0" step="10000" oninput="updateFarm(${f.id}, 'price', +this.value)">
+                </div>
+            </div>
         </div>`;
     });
     container.innerHTML = html;
@@ -312,7 +320,7 @@ function renderFarms() {
 }
 
 // ─── BIND INPUTS ──────────────────────────────────────────────────────────────
-const binds = ['beanPrice', 'cupsPerYear', 'cupPrice', 'cupPct', 'nftPrimaryQty', 'nftPrimaryPrice', 'nftPrimaryComm', 'nftSecondaryTx', 'nftSecondaryPrice', 'nftSecondaryRoyalty', 'nftQuickQty', 'nftQuickPrice', 'nftQuickComm'];
+const binds = ['beanPrice', 'cupsPerYear', 'cupPrice', 'cupPct', 'costLogisticsPct', 'costFarmersPct', 'nftPrimaryQty', 'nftPrimaryPrice', 'nftPrimaryComm', 'nftSecondaryTx', 'nftSecondaryPrice', 'nftSecondaryRoyalty', 'nftQuickQty', 'nftQuickPrice', 'nftQuickComm'];
 
 binds.forEach(id => {
     const el = document.getElementById(id);
@@ -327,7 +335,15 @@ binds.forEach(id => {
 function syncInputs() {
     binds.forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.value = state[id];
+        if (el) {
+            el.value = state[id];
+            const valEl = document.getElementById(id + 'Val');
+            if (valEl) {
+                // Determine suffix, usually '%' or ''
+                const suffix = id.includes('Pct') || id.includes('Comm') || id.includes('Royalty') ? '%' : '';
+                valEl.value = state[id] + suffix;
+            }
+        }
     });
 }
 
@@ -335,10 +351,12 @@ function syncInputs() {
 function calculate() {
     let totalTrees = 0;
     let yieldKg = 0;
+    let totalInvestment = 0;
 
     state.farms.forEach(f => {
         totalTrees += f.trees;
         yieldKg += (f.trees * f.yieldPerTree);
+        totalInvestment += (f.price || 0);
     });
 
     // Update global calculation readouts safely if they exist
@@ -357,16 +375,21 @@ function calculate() {
 
     const totalNft = (nftPrim + nftSec + nftQuick) || 0;
     const gross = (parseInt(grainRevenue) + parseInt(cupRevenue) + parseInt(totalNft)) || 0;
-    const net = gross;
+
+    // Cost deductions
+    const logisticsCost = gross * (state.costLogisticsPct / 100);
+    const farmersCost = grainRevenue * (state.costFarmersPct / 100);
+
+    const net = gross - logisticsCost - farmersCost;
 
     let marginValue = 0;
-    if (gross > 0) marginValue = 100;
+    if (gross > 0) marginValue = (net / gross) * 100;
 
     const cupAprValue = grainRevenue > 0 ? (cupRevenue / grainRevenue * 100) : 0;
-    const apr = marginValue;
+    const apr = totalInvestment > 0 ? (net / totalInvestment * 100) : 0;
 
     state.results = {
-        grainRevenue, cupRevenue, nftPrim, nftSec, nftQuick, totalNft, gross, net, yieldKg, totalTrees, apr, cupAprValue, marginValue
+        grainRevenue, cupRevenue, nftPrim, nftSec, nftQuick, totalNft, gross, net, yieldKg, totalTrees, apr, cupAprValue, marginValue, logisticsCost, farmersCost, totalInvestment
     };
 
     renderSummary();
@@ -389,14 +412,14 @@ function renderSummary() {
     const r = state.results;
 
     let html = `<div class="sum-grid">
-    <div class="sum-item"><div class="sum-lbl">Net (ROI)</div><div class="sum-val">${fmt.money(r.net)}</div></div>
-    <div class="sum-item"><div class="sum-lbl">Net Margin</div><div class="sum-val c-a1">${r.marginValue.toFixed(1)}%</div></div>
+    <div class="sum-item"><div class="sum-lbl">Total APR</div><div class="sum-val c-blue">${r.apr.toFixed(1)}%</div></div>
+    <div class="sum-item"><div class="sum-lbl">Net (ROI)</div><div class="sum-val c-a1">${fmt.money(r.net)}</div></div>
+    <div class="sum-item"><div class="sum-lbl">Total Investment</div><div class="sum-val">${fmt.money(r.totalInvestment)}</div></div>
+    <div class="sum-item"><div class="sum-lbl">Net Margin</div><div class="sum-val c-blue">${r.marginValue.toFixed(1)}%</div></div>
     <div class="sum-item"><div class="sum-lbl">Cup Yield (APR)</div><div class="sum-val c-purple">+${r.cupAprValue.toFixed(1)}%</div></div>
-    <div class="sum-item"><div class="sum-lbl">Cup Yield ($)</div><div class="sum-val c-purple">${fmt.money(r.cupRevenue)}</div></div>
     <div class="sum-item"><div class="sum-lbl">Gross Revenue</div><div class="sum-val c-green">${fmt.money(r.gross)}</div></div>
-    <div class="sum-item"><div class="sum-lbl">NFT Revenue</div><div class="sum-val c-purple">${fmt.money(r.totalNft)}</div></div>
     <div class="sum-item"><div class="sum-lbl">Total Coffee</div><div class="sum-val c-blue">${fmt.num(r.yieldKg)} kg</div></div>
-    <div class="sum-item"><div class="sum-lbl">Total Coffee ($)</div><div class="sum-val c-blue">${fmt.money(r.grainRevenue)}</div></div>
+    <div class="sum-item"><div class="sum-lbl">NFT Revenue</div><div class="sum-val c-purple">${fmt.money(r.totalNft)}</div></div>
   </div>`;
     el.innerHTML = html;
 }
@@ -415,8 +438,11 @@ function renderTable() {
       <tr><td>${t('row_nft_sec')}</td><td class="td-mono">${fmt.money(r.nftSec)}</td><td>${fmt.pct(r.nftSec / r.gross * 100)}</td></tr>
       <tr><td>${t('row_nft_quick')}</td><td class="td-mono">${fmt.money(r.nftQuick)}</td><td>${fmt.pct(r.nftQuick / r.gross * 100)}</td></tr>
       <tr style="font-weight:bold; border-top:1px solid var(--bdr);"><td class="c-green">${t('row_gross')}</td><td class="td-mono c-green">${fmt.money(r.gross)}</td><td>100%</td></tr>
-      <tr style="font-weight:bold; font-size:1.1em; border-top:1px solid var(--bdr);"><td>${t('row_net')}</td><td class="td-mono c-a1">${fmt.money(r.net)}</td><td>—</td></tr>
-      <tr style="font-weight:bold; color: var(--accent1);"><td>APR / Net Margin</td><td class="td-mono">${r.apr.toFixed(1)}%</td><td>—</td></tr>
+      <tr style="color: var(--warn);"><td>- Logistics Cost</td><td class="td-mono">-${fmt.money(r.logisticsCost)}</td><td>-${fmt.pct(r.logisticsCost / r.gross * 100)}</td></tr>
+      <tr style="color: var(--warn);"><td>- Farmers Processing</td><td class="td-mono">-${fmt.money(r.farmersCost)}</td><td>-${fmt.pct(r.farmersCost / r.gross * 100)}</td></tr>
+      <tr style="font-weight:bold; font-size:1.1em; border-top:1px solid var(--bdr);"><td>${t('row_net')}</td><td class="td-mono c-a1">${fmt.money(r.net)}</td><td>${fmt.pct(r.marginValue)}</td></tr>
+      <tr style="font-weight:bold; color: var(--accent1);"><td>Total Investment</td><td class="td-mono">${fmt.money(r.totalInvestment)}</td><td>—</td></tr>
+      <tr style="font-weight:bold; color: var(--accent1);"><td>Total APR</td><td class="td-mono c-blue">${r.apr.toFixed(1)}%</td><td>—</td></tr>
     </tbody>
   </table>`;
     el.innerHTML = html;
