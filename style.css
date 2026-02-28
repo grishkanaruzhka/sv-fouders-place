@@ -73,7 +73,8 @@ body {
   padding: 12px 24px;
 
   /* Telegram Safe Area and iOS Notch Support */
-  padding-top: calc(12px + var(--tg-safe-area-inset-top, env(safe-area-inset-top, 0px)));
+  /* Fallbacks: JS injected, Telegram native content-safe injected, CSS env() */
+  padding-top: calc(12px + var(--tg-safe-area-inset-top, var(--tg-content-safe-area-inset-top, env(safe-area-inset-top, 0px)))) !important;
 }
 
 [data-theme="light"] .header {

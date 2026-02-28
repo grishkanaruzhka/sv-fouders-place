@@ -707,15 +707,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bind safe area insets dynamically (Telegram 7.7+)
     function updateSafeArea() {
+      let topInset = 0;
+      let bottomInset = 0;
+
       if (tg.safeAreaInset) {
-        document.documentElement.style.setProperty('--tg-safe-area-inset-top', tg.safeAreaInset.top + 'px');
-        document.documentElement.style.setProperty('--tg-safe-area-inset-bottom', tg.safeAreaInset.bottom + 'px');
-        document.documentElement.style.setProperty('--tg-safe-area-inset-left', tg.safeAreaInset.left + 'px');
-        document.documentElement.style.setProperty('--tg-safe-area-inset-right', tg.safeAreaInset.right + 'px');
+        topInset = tg.safeAreaInset.top;
+        bottomInset = tg.safeAreaInset.bottom;
       }
+
+      if (topInset === 0 && tg.isExpanded) {
+        const platform = tg.platform || '';
+        if (platform === 'ios' || platform === 'android') {
+          topInset = 44; // Hardcoded fallback
+        }
+      }
+
+      document.documentElement.style.setProperty('--tg-safe-area-inset-top', topInset + 'px');
+      document.documentElement.style.setProperty('--tg-safe-area-inset-bottom', bottomInset + 'px');
     }
     updateSafeArea();
     tg.onEvent('safeAreaChanged', updateSafeArea);
+    tg.onEvent('viewportChanged', () => { if (tg.isExpanded) updateSafeArea(); });
 
     // Default theme based on Telegram WebApp
     if (tg.colorScheme) {
