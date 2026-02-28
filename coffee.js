@@ -131,10 +131,38 @@ const fmt = {
 // ─── INITIALIZATION & FETCH ───────────────────────────────────────────────────
 function loadYields() {
     state.yields = {
-        "Georgia": { "Arabica": 1.8, "Liberica": 1.5 },
-        "Ethiopia": { "Yirgacheffe": 2.5, "Sidamo": 2.2 },
-        "Colombia": { "Caturra": 2.0, "Castillo": 2.3 },
-        "Kenya": { "SL34": 2.1, "Ruiru11": 2.4 }
+        "Colombia": {
+            "Bourbon": 2.3,
+            "Caturra": 0.42,
+            "Castillo": 0.6,
+            "Pink Bourbon": 2.25,
+            "Colombia": 0.6,
+            "Typica": 1.75,
+            "Tabi": 2.0,
+            "Geisha": 0.55
+        },
+        "Panama": {
+            "Geisha": 0.65,
+            "Sidra": 1.75,
+            "Catuaí": 1.25,
+            "Typica": 1.75
+        },
+        "Kenya": {
+            "SL28": 2.75,
+            "SL34": 2.75,
+            "K7": 2.25,
+            "Ruiru 11": 2.5,
+            "Batian": 3.0
+        },
+        "Ethiopia": {
+            "Heirloom (Yirgacheffe)": 0.75,
+            "Heirloom (Sidama)": 0.85,
+            "Heirloom (Guji / Oromia)": 0.65,
+            "74110": 1.75,
+            "74158": 1.75,
+            "Hybrids 75227": 2.75
+        },
+        "Georgia": { "Arabica": 1.8, "Liberica": 1.5 }
     };
 }
 
@@ -342,7 +370,7 @@ const scenarios = {
     },
     ethiopia: () => {
         state.farms = []; state._farmId = 0;
-        addFarm('Ethiopia', 'Yirgacheffe', 50000);
+        addFarm('Ethiopia', 'Heirloom (Yirgacheffe)', 50000);
         state.beanPrice = 12; state.cupsPerYear = 500000;
         state.nftPrimaryQty = 500; state.nftPrimaryPrice = 150; state.nftSecondaryTx = 1000;
     },
