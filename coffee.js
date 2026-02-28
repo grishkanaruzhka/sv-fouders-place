@@ -161,13 +161,12 @@ function loadYields() {
             "74110": 1.75,
             "74158": 1.75,
             "Hybrids 75227": 2.75
-        },
-        "Georgia": { "Arabica": 1.8, "Liberica": 1.5 }
+        }
     };
 }
 
 // ─── FARM DYNAMICS ────────────────────────────────────────────────────────────
-function addFarm(country = 'Georgia', sort = 'Arabica', trees = 10000) {
+function addFarm(country = 'Colombia', sort = 'Bourbon', trees = 10000) {
     const id = ++state._farmId;
     let yieldPerTree = 1.8;
     if (state.yields && state.yields[country] && state.yields[country][sort]) {
@@ -361,10 +360,10 @@ function renderTable() {
 
 // ─── SCENARIOS ────────────────────────────────────────────────────────────────
 const scenarios = {
-    georgia: () => {
+    colombia: () => {
         state.farms = []; state._farmId = 0;
-        addFarm('Georgia', 'Arabica', 20000);
-        addFarm('Georgia', 'Arabica', 20000);
+        addFarm('Colombia', 'Bourbon', 20000);
+        addFarm('Colombia', 'Bourbon', 20000);
         state.beanPrice = 8; state.cupsPerYear = 100000;
         state.nftPrimaryQty = 1000; state.nftPrimaryPrice = 100; state.nftSecondaryTx = 500;
     },
@@ -471,7 +470,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('addFarmBtn').onclick = () => addFarm();
 
     // Default init empty state
-    if (state.farms.length === 0) addFarm('Georgia', 'Arabica', 10000);
+    if (state.farms.length === 0) addFarm('Colombia', 'Bourbon', 10000);
 
     syncInputs();
     calculate();
