@@ -20,6 +20,8 @@ const state = {
     nftQuickQty: 200,
     nftQuickPrice: 200,
     nftQuickComm: 3,
+    enableSales: true,
+    enableNft: true,
     results: null
 };
 window.state = state;
@@ -332,6 +334,33 @@ binds.forEach(id => {
     }
 });
 
+// Toggles
+const toggleSales = document.getElementById('toggleSales');
+if (toggleSales) {
+    toggleSales.addEventListener('change', (e) => {
+        state.enableSales = e.target.checked;
+        const body = document.getElementById('salesBody');
+        if (body) {
+            if (state.enableSales) body.classList.remove('disabled-section');
+            else body.classList.add('disabled-section');
+        }
+        autoCalc();
+    });
+}
+
+const toggleNft = document.getElementById('toggleNft');
+if (toggleNft) {
+    toggleNft.addEventListener('change', (e) => {
+        state.enableNft = e.target.checked;
+        const body = document.getElementById('nftBody');
+        if (body) {
+            if (state.enableNft) body.classList.remove('disabled-section');
+            else body.classList.add('disabled-section');
+        }
+        autoCalc();
+    });
+}
+
 function syncInputs() {
     binds.forEach(id => {
         const el = document.getElementById(id);
@@ -367,11 +396,19 @@ function calculate() {
     if (yieldDisplay) yieldDisplay.value = fmt.num(Math.round(yieldKg)) + ' kg';
 
     const grainRevenue = yieldKg * state.beanPrice;
-    const cupRevenue = state.cupsPerYear * state.cupPrice * (state.cupPct / 100);
 
-    const nftPrim = state.nftPrimaryQty * state.nftPrimaryPrice * (state.nftPrimaryComm / 100);
-    const nftSec = state.nftSecondaryTx * state.nftSecondaryPrice * (state.nftSecondaryRoyalty / 100);
-    const nftQuick = state.nftQuickQty * state.nftQuickPrice * (state.nftQuickComm / 100);
+    // Respect toggles
+    let cupRevenue = 0;
+    if (state.enableSales) {
+        cupRevenue = state.cupsPerYear * state.cupPrice * (state.cupPct / 100);
+    }
+
+    let nftPrim = 0, nftSec = 0, nftQuick = 0;
+    if (state.enableNft) {
+        nftPrim = state.nftPrimaryQty * state.nftPrimaryPrice * (state.nftPrimaryComm / 100);
+        nftSec = state.nftSecondaryTx * state.nftSecondaryPrice * (state.nftSecondaryRoyalty / 100);
+        nftQuick = state.nftQuickQty * state.nftQuickPrice * (state.nftQuickComm / 100);
+    }
 
     const totalNft = (nftPrim + nftSec + nftQuick) || 0;
     const gross = (parseInt(grainRevenue) + parseInt(cupRevenue) + parseInt(totalNft)) || 0;
@@ -456,6 +493,20 @@ const scenarios = {
         state.nftPrimaryQty = 100000; state.nftPrimaryPrice = 15;
         state.nftSecondaryTx = 0; state.nftSecondaryPrice = 0; state.nftSecondaryRoyalty = 0;
         state.nftQuickQty = 0; state.nftQuickPrice = 0; state.nftQuickComm = 0;
+
+        // Reset Toggles
+        state.enableSales = true;
+        state.enableNft = true;
+        const ts = document.getElementById('toggleSales');
+        if (ts) ts.checked = true;
+        const tn = document.getElementById('toggleNft');
+        if (tn) tn.checked = true;
+        const sb = document.getElementById('salesBody');
+        if (sb) sb.classList.remove('disabled-section');
+        const nb = document.getElementById('nftBody');
+        if (nb) nb.classList.remove('disabled-section');
+
+        syncInputs();
     }
 };
 

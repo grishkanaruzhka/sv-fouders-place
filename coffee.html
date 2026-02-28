@@ -190,10 +190,14 @@
                     <!-- TAB: COFFEE SALES -->
                     <div id="tab-sales" class="tab-pane">
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header" style="justify-content: space-between;">
                                 <span class="card-title" data-i18n="sales_title">☕ Coffee & Cup Sales</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="toggleSales" checked>
+                                    <span class="slider"></span>
+                                </label>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" id="salesBody">
                                 <div class="block-hint">
                                     <span class="block-hint-icon">💰</span>
                                     <div>
@@ -248,10 +252,14 @@
                     <!-- TAB: NFT -->
                     <div id="tab-nft" class="tab-pane">
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header" style="justify-content: space-between;">
                                 <span class="card-title" data-i18n="nft_title">🖼️ NFT Revenue</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="toggleNft" checked>
+                                    <span class="slider"></span>
+                                </label>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" id="nftBody">
                                 <div class="block-hint">
                                     <span class="block-hint-icon">💎</span>
                                     <div>
