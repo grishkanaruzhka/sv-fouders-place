@@ -303,6 +303,7 @@ function calculate() {
     const net = gross - costs;
     const marginValue = gross > 0 ? (gross - costs) / gross * 100 : 0;
     const cupAprValue = grainRevenue > 0 ? (cupRevenue / grainRevenue * 100) : 0;
+    const apr = marginValue;
 
     state.results = {
         grainRevenue, cupRevenue, nftPrim, nftSec, nftQuick, totalNft, gross, costs, net, yieldKg, totalTrees, apr, cupAprValue, marginValue
