@@ -716,12 +716,8 @@ document.addEventListener('DOMContentLoaded', () => {
         bottomInset = insets.bottom;
       }
 
-      if (topInset === 0 && tg.isExpanded) {
-        const platform = tg.platform || '';
-        if (platform === 'ios' || platform === 'android') {
-          topInset = 48; // Hardcoded fallback
-        }
-      }
+      // Force minimum top inset for TMA to prevent header overlap
+      topInset = Math.max(100, topInset);
 
       document.documentElement.style.setProperty('--tg-safe-area-inset-top', topInset + 'px');
       document.documentElement.style.setProperty('--tg-safe-area-inset-bottom', bottomInset + 'px');

@@ -131,21 +131,6 @@
                     <!-- TAB: FARMS & YIELD -->
                     <div id="tab-farms" class="tab-pane active">
 
-                        <!-- ADMIN PANEL -->
-                        <div class="card mb-4" id="adminPanelCard">
-                            <div class="card-header" style="cursor: pointer;" onclick="toggleAdminPanel()"
-                                id="adminToggleHeader">
-                                <span class="card-title">⚙️ Admin Panel: Yields & Prices</span>
-                                <button class="hint-close-btn" id="adminToggleBtn"
-                                    style="transition: transform 0.3s ease; pointer-events: none;">⌃</button>
-                            </div>
-                            <div class="card-body" id="adminPanelBody" style="display: none;">
-                                <div class="tbl-wrap">
-                                    <div id="adminPanelContainer"></div>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- FARMS LIST -->
                         <div class="card">
                             <div class="card-header">
@@ -166,6 +151,37 @@
                                 </div>
                                 <div style="margin-top: 16px;">
                                     <button class="btn btn-outline" id="addFarmBtn">+ Add Farm</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ADMIN PANEL -->
+                        <div class="card mt-4" id="adminPanelCard">
+                            <div class="card-header collapsible-header" onclick="toggleAdminPanel()"
+                                id="adminToggleHeader">
+                                <span class="card-title">⚙️ Admin Panel: Yields & Prices</span>
+                                <span class="collapse-icon" id="adminToggleBtn"
+                                    style="transform: rotate(-90deg);">▼</span>
+                            </div>
+                            <div class="card-body" id="adminPanelBody" style="display: none;">
+                                <div class="tbl-wrap">
+                                    <div id="adminPanelContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scenarios Card Sidebar -->
+                        <div class="card mt-4">
+                            <div class="card-header"><span class="card-title" data-i18n="scenarios_title">🎯
+                                    Scenarios</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="scenarios-grid">
+                                    <div class="scenario-card" data-scenario="colombia">
+                                        <h4>🇨🇴 Tamesis San Pablo</h4>
+                                        <p>Colombia Castillo</p>
+                                        <button class="btn btn-primary" style="width:100%">Load</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -301,51 +317,11 @@
                         </div>
                     </div>
 
-                    <!-- Scenarios Card Sidebar -->
-                    <div class="card mt-4">
-                        <div class="card-header"><span class="card-title" data-i18n="scenarios_title">🎯
-                                Scenarios</span>
-                        </div>
-                        <div class="card-body p0">
-                            <div class="scenarios-grid p-3">
-                                <div class="scenario-card" data-scenario="colombia">
-                                    <h4>🇨🇴 Colombia Default</h4>
-                                    <p>Colombia Bourbon</p>
-                                    <button class="btn btn-primary" style="width:100%">Load</button>
-                                </div>
-                                <div class="scenario-card" data-scenario="ethiopia">
-                                    <h4>🇪🇹 Ethiopia High Yield</h4>
-                                    <p>Ethiopia Heirloom (Yirgacheffe)</p>
-                                    <button class="btn btn-primary" style="width:100%">Load</button>
-                                </div>
-                                <div class="scenario-card" data-scenario="nftHeavy">
-                                    <h4>🖼️ NFT Heavy Focus</h4>
-                                    <p>Colombia Caturra (NFT focus)</p>
-                                    <button class="btn btn-primary" style="width:100%">Load</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div> <!-- END SUMMARY SIDEBAR -->
             </div> <!-- END layout-2col wrapper -->
 
             <!-- TAB: RESULTS -->
             <div id="tab-results" class="tab-pane">
-
-                <!-- Costs Slider Area -->
-                <div class="card mb-4">
-                    <div class="card-header"><span class="card-title" data-i18n="costs_title">💸 Operational Costs &
-                            Setup</span></div>
-                    <div class="card-body">
-                        <div class="slider-row">
-                            <label><span data-i18n="lbl_costs">Est. Operational Costs (%)</span>: <strong
-                                    id="costValDisplay" class="c-pink">30%</strong></label>
-                            <input type="range" id="costsPct" min="0" max="80" value="30" class="wide-slider">
-                            <div class="formula-note" data-i18n="lbl_costs_note">Used to calculate net ROI after gross
-                                revenue.</div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Charts Area -->
                 <div class="charts-grid">

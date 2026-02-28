@@ -74,7 +74,7 @@ body {
 
   /* Telegram Safe Area and iOS Notch Support */
   /* Fallbacks: JS injected, Telegram native content-safe injected, CSS env() */
-  padding-top: calc(12px + var(--tg-safe-area-inset-top, var(--tg-content-safe-area-inset-top, env(safe-area-inset-top, 48px)))) !important;
+  padding-top: max(100px, calc(12px + var(--tg-safe-area-inset-top, var(--tg-content-safe-area-inset-top, env(safe-area-inset-top, 0px))))) !important;
 }
 
 [data-theme="light"] .header {
@@ -224,8 +224,6 @@ body {
 @media (max-width: 900px) {
   .layout-2col {
     grid-template-columns: 1fr;
-    display: flex;
-    flex-direction: column-reverse;
   }
 }
 
@@ -460,6 +458,23 @@ select option {
   display: flex;
   gap: 8px;
   align-items: center
+}
+
+/* MARGIN UTILITIES */
+.mt-4 {
+  margin-top: 20px !important;
+}
+
+.mb-4 {
+  margin-bottom: 20px !important;
+}
+
+.mt-2 {
+  margin-top: 10px !important;
+}
+
+.mb-2 {
+  margin-bottom: 10px !important;
 }
 
 /* SUMMARY */
@@ -1583,7 +1598,7 @@ tr:hover td {
 
 @media (max-width: 480px) {
   .header {
-    height: 52px;
+    min-height: 52px;
   }
 
   .mc {

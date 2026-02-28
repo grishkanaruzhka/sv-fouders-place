@@ -18,7 +18,6 @@ const state = {
     nftQuickQty: 200,
     nftQuickPrice: 200,
     nftQuickComm: 3,
-    costsPct: 30,
     results: null
 };
 window.state = state;
@@ -165,6 +164,74 @@ function loadYields() {
     };
 }
 
+// ─── ADMIN PANEL ──────────────────────────────────────────────────────────────
+function renderAdminPanel() {
+    const container = document.getElementById('adminPanelContainer');
+    if (!container) return;
+
+    let html = '<table><thead><tr><th>Country</th><th>Sort</th><th>Yield (kg)</th><th>Action</th></tr></thead><tbody>';
+
+    for (const country in state.yields) {
+        for (const sort in state.yields[country]) {
+            const y = state.yields[country][sort];
+            const escC = String(country).replace(/'/g, "\\'");
+            const escS = String(sort).replace(/'/g, "\\'");
+
+            html += `<tr>
+                <td class="td-name">${country}</td>
+                <td>${sort}</td>
+                <td class="td-mono"><input type="number" step="0.01" value="${y}" onchange="updateAdminYield('${escC}', '${escS}', this.value)" style="width:80px; text-align:right;"></td>
+                <td style="text-align:right;"><button class="btn btn-sm btn-outline" style="color:var(--err);border-color:var(--err)" onclick="deleteAdminYield('${escC}', '${escS}')">✕</button></td>
+            </tr>`;
+        }
+    }
+
+    html += `<tr style="border-top: 1px solid var(--bdr);">
+        <td><input type="text" id="adminNewCountry" placeholder="Country" style="width:100%;"></td>
+        <td><input type="text" id="adminNewSort" placeholder="Sort" style="width:100%;"></td>
+        <td class="td-mono"><input type="number" step="0.01" id="adminNewYield" placeholder="0.20" style="width:80px; text-align:right;"></td>
+        <td style="text-align:right;"><button class="btn btn-sm btn-primary" onclick="addAdminYield()">Add</button></td>
+    </tr>`;
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+window.updateAdminYield = function (country, sort, val) {
+    const num = parseFloat(val);
+    if (!isNaN(num) && state.yields[country]) {
+        state.yields[country][sort] = num;
+        renderFarms();
+        autoCalc();
+    }
+};
+
+window.deleteAdminYield = function (country, sort) {
+    if (state.yields[country] && state.yields[country][sort]) {
+        delete state.yields[country][sort];
+        if (Object.keys(state.yields[country]).length === 0) {
+            delete state.yields[country];
+        }
+        renderAdminPanel();
+        renderFarms();
+        autoCalc();
+    }
+};
+
+window.addAdminYield = function () {
+    const c = document.getElementById('adminNewCountry').value.trim();
+    const s = document.getElementById('adminNewSort').value.trim();
+    const y = parseFloat(document.getElementById('adminNewYield').value);
+
+    if (c && s && !isNaN(y) && y > 0) {
+        if (!state.yields[c]) state.yields[c] = {};
+        state.yields[c][s] = y;
+        renderAdminPanel();
+        renderFarms();
+        autoCalc();
+    }
+};
+
 // ─── FARM DYNAMICS ────────────────────────────────────────────────────────────
 function addFarm(country = 'Colombia', sort = 'Bourbon', trees = 10000) {
     const id = ++state._farmId;
@@ -250,21 +317,12 @@ const binds = ['beanPrice', 'cupsPerYear', 'cupPrice', 'cupPct', 'nftPrimaryQty'
 binds.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-        el.addEventListener('input', (e) => {
-            state[id] = parseFloat(e.target.value) || 0;
+        el.addEventListener('input', () => {
+            if (el.type === 'number' || el.type === 'range') state[id] = parseFloat(el.value) || 0;
             autoCalc();
         });
     }
 });
-
-const costsSlider = document.getElementById('costsPct');
-if (costsSlider) {
-    costsSlider.addEventListener('input', (e) => {
-        state.costsPct = parseFloat(e.target.value);
-        document.getElementById('costValDisplay').textContent = state.costsPct + '%';
-        autoCalc();
-    });
-}
 
 function syncInputs() {
     binds.forEach(id => {
@@ -297,16 +355,18 @@ function calculate() {
     const nftSec = state.nftSecondaryTx * state.nftSecondaryPrice * (state.nftSecondaryRoyalty / 100);
     const nftQuick = state.nftQuickQty * state.nftQuickPrice * (state.nftQuickComm / 100);
 
-    const totalNft = nftPrim + nftSec + nftQuick;
-    const gross = grainRevenue + cupRevenue + totalNft;
-    const costs = gross * (state.costsPct / 100);
-    const net = gross - costs;
-    const marginValue = gross > 0 ? (gross - costs) / gross * 100 : 0;
+    const totalNft = (nftPrim + nftSec + nftQuick) || 0;
+    const gross = (parseInt(grainRevenue) + parseInt(cupRevenue) + parseInt(totalNft)) || 0;
+    const net = gross;
+
+    let marginValue = 0;
+    if (gross > 0) marginValue = 100;
+
     const cupAprValue = grainRevenue > 0 ? (cupRevenue / grainRevenue * 100) : 0;
     const apr = marginValue;
 
     state.results = {
-        grainRevenue, cupRevenue, nftPrim, nftSec, nftQuick, totalNft, gross, costs, net, yieldKg, totalTrees, apr, cupAprValue, marginValue
+        grainRevenue, cupRevenue, nftPrim, nftSec, nftQuick, totalNft, gross, net, yieldKg, totalTrees, apr, cupAprValue, marginValue
     };
 
     renderSummary();
@@ -355,7 +415,6 @@ function renderTable() {
       <tr><td>${t('row_nft_sec')}</td><td class="td-mono">${fmt.money(r.nftSec)}</td><td>${fmt.pct(r.nftSec / r.gross * 100)}</td></tr>
       <tr><td>${t('row_nft_quick')}</td><td class="td-mono">${fmt.money(r.nftQuick)}</td><td>${fmt.pct(r.nftQuick / r.gross * 100)}</td></tr>
       <tr style="font-weight:bold; border-top:1px solid var(--bdr);"><td class="c-green">${t('row_gross')}</td><td class="td-mono c-green">${fmt.money(r.gross)}</td><td>100%</td></tr>
-      <tr style="color:var(--err);"><td>${t('row_costs')} (${state.costsPct}%)</td><td class="td-mono">-${fmt.money(r.costs)}</td><td>—</td></tr>
       <tr style="font-weight:bold; font-size:1.1em; border-top:1px solid var(--bdr);"><td>${t('row_net')}</td><td class="td-mono c-a1">${fmt.money(r.net)}</td><td>—</td></tr>
       <tr style="font-weight:bold; color: var(--accent1);"><td>APR / Net Margin</td><td class="td-mono">${r.apr.toFixed(1)}%</td><td>—</td></tr>
     </tbody>
@@ -363,26 +422,14 @@ function renderTable() {
     el.innerHTML = html;
 }
 
-// ─── SCENARIOS ────────────────────────────────────────────────────────────────
 const scenarios = {
     colombia: () => {
         state.farms = []; state._farmId = 0;
-        addFarm('Colombia', 'Bourbon', 20000);
-        addFarm('Colombia', 'Bourbon', 20000);
-        state.beanPrice = 8; state.cupsPerYear = 100000;
-        state.nftPrimaryQty = 1000; state.nftPrimaryPrice = 100; state.nftSecondaryTx = 500;
-    },
-    ethiopia: () => {
-        state.farms = []; state._farmId = 0;
-        addFarm('Ethiopia', 'Yirgacheffe', 50000);
-        state.beanPrice = 12; state.cupsPerYear = 500000;
-        state.nftPrimaryQty = 500; state.nftPrimaryPrice = 150; state.nftSecondaryTx = 1000;
-    },
-    nftHeavy: () => {
-        state.farms = []; state._farmId = 0;
-        addFarm('Colombia', 'Caturra', 5000);
-        state.beanPrice = 7; state.cupsPerYear = 20000;
-        state.nftPrimaryQty = 5000; state.nftPrimaryPrice = 250; state.nftPrimaryComm = 10; state.nftSecondaryTx = 15000;
+        addFarm('Colombia', 'Castillo', 100000);
+        state.beanPrice = 15; state.cupsPerYear = 100000; state.cupPrice = 4.5; state.cupPct = 10;
+        state.nftPrimaryQty = 100000; state.nftPrimaryPrice = 15;
+        state.nftSecondaryTx = 0; state.nftSecondaryPrice = 0; state.nftSecondaryRoyalty = 0;
+        state.nftQuickQty = 0; state.nftQuickPrice = 0; state.nftQuickComm = 0;
     }
 };
 
@@ -421,7 +468,17 @@ function closeMenu() {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 
+let adminPanelOpen = false;
+window.toggleAdminPanel = function () {
+    const body = document.getElementById('adminPanelBody');
+    const icon = document.getElementById('adminToggleBtn');
+    adminPanelOpen = !adminPanelOpen;
+    body.style.display = adminPanelOpen ? '' : 'none';
+    icon.style.transform = adminPanelOpen ? '' : 'rotate(-90deg)';
+};
+
 // ─── APP BOOTSTRAP ────────────────────────────────────────────────────────────
+
 document.addEventListener('DOMContentLoaded', async () => {
     if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
@@ -440,12 +497,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 bottomInset = insets.bottom;
             }
 
-            if (topInset === 0 && tg.isExpanded) {
-                const platform = tg.platform || '';
-                if (platform === 'ios' || platform === 'android') {
-                    topInset = 48; // Hardcoded fallback
-                }
-            }
+            // Force minimum top inset for TMA to prevent header overlap
+            topInset = Math.max(100, topInset);
 
             document.documentElement.style.setProperty('--tg-safe-area-inset-top', topInset + 'px');
             document.documentElement.style.setProperty('--tg-safe-area-inset-bottom', bottomInset + 'px');
@@ -505,6 +558,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     _initGlobalTip();
     loadYields();
+    renderAdminPanel();
 
     document.getElementById('addFarmBtn').onclick = () => addFarm();
 
