@@ -329,12 +329,14 @@ function renderSummary() {
     const r = state.results;
 
     let html = `<div class="sum-grid">
-    <div class="sum-item"><div class="sum-lbl">Gross Revenue</div><div class="sum-val c-green">${fmt.money(r.gross)}</div></div>
     <div class="sum-item"><div class="sum-lbl">Net (ROI)</div><div class="sum-val">${fmt.money(r.net)}</div></div>
     <div class="sum-item"><div class="sum-lbl">Net Margin</div><div class="sum-val c-a1">${r.marginValue.toFixed(1)}%</div></div>
     <div class="sum-item"><div class="sum-lbl">Cup Yield (APR)</div><div class="sum-val c-purple">+${r.cupAprValue.toFixed(1)}%</div></div>
-    <div class="sum-item"><div class="sum-lbl">Total Coffee</div><div class="sum-val c-blue">${fmt.num(r.yieldKg)} kg</div></div>
+    <div class="sum-item"><div class="sum-lbl">Cup Yield ($)</div><div class="sum-val c-purple">${fmt.money(r.cupRevenue)}</div></div>
+    <div class="sum-item"><div class="sum-lbl">Gross Revenue</div><div class="sum-val c-green">${fmt.money(r.gross)}</div></div>
     <div class="sum-item"><div class="sum-lbl">NFT Revenue</div><div class="sum-val c-purple">${fmt.money(r.totalNft)}</div></div>
+    <div class="sum-item"><div class="sum-lbl">Total Coffee</div><div class="sum-val c-blue">${fmt.num(r.yieldKg)} kg</div></div>
+    <div class="sum-item"><div class="sum-lbl">Total Coffee ($)</div><div class="sum-val c-blue">${fmt.money(r.grainRevenue)}</div></div>
   </div>`;
     el.innerHTML = html;
 }
