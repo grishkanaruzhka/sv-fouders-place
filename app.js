@@ -705,6 +705,18 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Fullscreen not supported:', e);
     }
 
+    // Bind safe area insets dynamically (Telegram 7.7+)
+    function updateSafeArea() {
+      if (tg.safeAreaInset) {
+        document.documentElement.style.setProperty('--tg-safe-area-inset-top', tg.safeAreaInset.top + 'px');
+        document.documentElement.style.setProperty('--tg-safe-area-inset-bottom', tg.safeAreaInset.bottom + 'px');
+        document.documentElement.style.setProperty('--tg-safe-area-inset-left', tg.safeAreaInset.left + 'px');
+        document.documentElement.style.setProperty('--tg-safe-area-inset-right', tg.safeAreaInset.right + 'px');
+      }
+    }
+    updateSafeArea();
+    tg.onEvent('safeAreaChanged', updateSafeArea);
+
     // Default theme based on Telegram WebApp
     if (tg.colorScheme) {
       state.theme = tg.colorScheme;
