@@ -66,7 +66,6 @@ function renderSensitivityLine(labelColor, gridColor) {
 
     const labels = [];
     const grossData = [];
-    const netData = [];
 
     const baseYieldKg = state.results.yieldKg;
     const multi = [0.5, 0.75, 1.0, 1.25, 1.5]; // Test from -50% to +50% yield
@@ -81,10 +80,8 @@ function renderSensitivityLine(labelColor, gridColor) {
         const nR = state.results.totalNft;
 
         const gross = gR + cR + nR;
-        const net = gross - (gross * (state.costsPct / 100));
 
         grossData.push(gross);
-        netData.push(net);
     });
 
     sensitivityChartInstance = new Chart(ctx, {
@@ -101,19 +98,6 @@ function renderSensitivityLine(labelColor, gridColor) {
                     fill: true,
                     tension: 0.3,
                     pointBackgroundColor: '#00d2ff',
-                    pointBorderWidth: 0,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                },
-                {
-                    label: 'Net Revenue (ROI)',
-                    data: netData,
-                    borderColor: '#7c6dff',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                    tension: 0.3,
-                    pointBackgroundColor: '#7c6dff',
                     pointBorderWidth: 0,
                     pointRadius: 4,
                     pointHoverRadius: 6
