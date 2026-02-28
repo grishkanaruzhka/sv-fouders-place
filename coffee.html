@@ -336,10 +336,21 @@
                     <div class="card-header"><span class="card-title" data-i18n="costs_title">💸 Operational Costs &
                             Breakdown</span></div>
                     <div class="card-body">
+                        <div class="block-hint mb-4">
+                            <span class="block-hint-icon">📈</span>
+                            <div>
+                                <strong data-i18n="hint_costs_title">How APR is Calculated</strong>
+                                <span class="hint-body" data-i18n="hint_costs_body"> — We deduct the operational costs
+                                    from your total gross revenue to find your Net ROI. Your Total APR is the Net ROI
+                                    divided by your Total Investment.</span>
+                            </div>
+                        </div>
                         <div class="frow">
                             <div class="fg">
                                 <label>
-                                    <span>Logistics (% of all Gross Revenue)</span>
+                                    <span data-i18n="lbl_logistics">Logistics (% of all Gross Revenue)</span>
+                                    <span class="tip-wrap" data-tip="tip_logistics"><span
+                                            class="tip-icon">?</span></span>
                                     <span class="val-display"><output id="costLogisticsPctVal"
                                             class="c-a2">5%</output></span>
                                 </label>
@@ -348,7 +359,8 @@
                             </div>
                             <div class="fg">
                                 <label>
-                                    <span>Farmers Processing (% of Green Grain only)</span>
+                                    <span data-i18n="lbl_farmers">Farmers Processing (% of Green Grain only)</span>
+                                    <span class="tip-wrap" data-tip="tip_farmers"><span class="tip-icon">?</span></span>
                                     <span class="val-display"><output id="costFarmersPctVal"
                                             class="c-a1">10%</output></span>
                                 </label>

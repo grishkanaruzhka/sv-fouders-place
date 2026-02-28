@@ -42,6 +42,12 @@ const i18n = {
         hint_farms_title: 'Yield Generation', hint_farms_body: ' — Average grain yield per tree depends on the country and coffee sort. Select them below to auto-fetch the expected yield, or override it manually.',
         hint_sales_title: 'Revenue Streams', hint_sales_body: ' — Enter your wholesale grain prices and direct-to-consumer cup sales. The company takes a percentage of cup sales as revenue.',
         hint_nft_title: 'Web3 Integration', hint_nft_body: ' — Model revenue from primary mints, secondary market royalties, and quick-sale items. Set the average prices and commission percentages.',
+        hint_costs_title: 'How APR is Calculated', hint_costs_body: ' — We deduct the operational costs from your total gross revenue to find your Net ROI. Your Total APR is the Net ROI divided by your Total Investment.',
+        tip_trees: 'Total number of coffee trees planted on this farm.',
+        tip_farm_price: 'The total price to acquire or invest in this farm. Used to calculate your Total Investment.',
+        tip_logistics: 'Percentage of total revenue spent on shipping, storage, and logistics.',
+        tip_farmers: 'Percentage paid to farmers for processing raw cherries into green grain. Deducted only from wholesale grain revenue.',
+        lbl_farm_price: 'Farm Price & Investment ($)', lbl_logistics: 'Logistics (% of all Gross Revenue)', lbl_farmers: 'Farmers Processing (% of Green Grain only)',
         tip_yield: 'Average yield of green coffee beans per tree per harvest.',
         tip_bean_price: 'Wholesale selling price per kilogram of processed green or roasted beans.',
         tip_cup_pct: 'Your company\'s revenue share from direct consumer cup sales.',
@@ -62,6 +68,12 @@ const i18n = {
         hint_farms_title: 'Генерация Урожая', hint_farms_body: ' — Средний урожай зерен с дерева зависит от страны и сорта. Выберите их ниже для авто-заполнения ожидаемого урожая.',
         hint_sales_title: 'Потоки Доходов', hint_sales_body: ' — Укажите оптовые цены на зерно и продажи чашек потребителям. Компания получает процент от продаж чашек.',
         hint_nft_title: 'Web3 Интеграция', hint_nft_body: ' — Моделируйте доходы от первичных минтов, роялти на вторичном рынке и быстрых продаж. Задайте средние цены и комиссии.',
+        hint_costs_title: 'Как рассчитывается APR', hint_costs_body: ' — Мы вычитаем операционные расходы из вашего общего дохода для того чтобы найти Чистую Прибыль (ROI). Общий APR это Чистая Прибыль разделенная на Общие Инвестиции.',
+        tip_trees: 'Общее количество кофейных деревьев посаженных на этой ферме.',
+        tip_farm_price: 'Общая цена покупки или инвестиций в эту ферму. Используется для расчета общих инвестиций.',
+        tip_logistics: 'Процент от общего дохода, затрачиваемый на доставку, хранение и логистику.',
+        tip_farmers: 'Процент, выплачиваемый фермерам за переработку ягод в зеленое зерно. Вычитается только из доходов с оптовой продажи зерна.',
+        lbl_farm_price: 'Стоимость Фермы и Инвестиции ($)', lbl_logistics: 'Логистика (% от всего Валового Дохода)', lbl_farmers: 'Обработка Фермером (% только от Зеленого Зерна)',
         tip_yield: 'Средний урожай зеленых кофейных зерен с одного дерева за сезон.',
         tip_bean_price: 'Оптовая цена продажи за килограмм обработанных зерен.',
         tip_cup_pct: 'Доля выручки вашей компании от прямых продаж чашек потребителям.',
@@ -299,19 +311,26 @@ function renderFarms() {
             </div>
             <div class="frow">
                 <div class="fg">
-                    <label><span data-i18n="lbl_trees">Trees per Farm</span></label>
+                    <label>
+                        <span data-i18n="lbl_trees">Trees per Farm</span>
+                        <span class="tip-wrap" data-tip="tip_trees"><span class="tip-icon">?</span></span>
+                    </label>
                     <input type="number" value="${f.trees}" min="1" step="100" oninput="updateFarm(${f.id}, 'trees', +this.value)">
                 </div>
                 <div class="fg">
                     <label>
                         <span data-i18n="lbl_yield">Yield (kg green beans / tree)</span>
+                        <span class="tip-wrap" data-tip="tip_yield"><span class="tip-icon">?</span></span>
                     </label>
                     <input type="number" value="${f.yieldPerTree}" min="0.01" step="0.01" oninput="updateFarm(${f.id}, 'yieldPerTree', +this.value)">
                 </div>
             </div>
             <div class="frow">
                 <div class="fg" style="grid-column: 1 / -1;">
-                    <label><span>Farm Price & Investment ($)</span></label>
+                    <label>
+                        <span data-i18n="lbl_farm_price">Farm Price & Investment ($)</span>
+                        <span class="tip-wrap" data-tip="tip_farm_price"><span class="tip-icon">?</span></span>
+                    </label>
                     <input type="number" value="${f.price}" min="0" step="10000" oninput="updateFarm(${f.id}, 'price', +this.value)">
                 </div>
             </div>

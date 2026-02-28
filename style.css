@@ -47,6 +47,8 @@ body {
   /* Prevent horizontal scrolling entirely */
   max-width: 100vw;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
+  background-color: var(--bg);
 }
 
 html {
