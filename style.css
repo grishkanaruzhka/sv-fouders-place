@@ -1253,6 +1253,30 @@ tr:hover td {
   margin: 12px 16px 8px;
 }
 
+.hint-close-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  color: var(--txt2);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+  transition: color var(--dur);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.hint-close-btn:hover {
+  color: var(--txt);
+  background: rgba(255, 255, 255, 0.05);
+}
+
 /* ─── HAMBURGER BUTTON ───────────────────────────────────────────────────── */
 .menu-btn {
   display: flex;

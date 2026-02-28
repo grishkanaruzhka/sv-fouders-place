@@ -132,35 +132,35 @@ const fmt = {
 function loadYields() {
     state.yields = {
         "Colombia": {
-            "Bourbon": 2.3,
-            "Caturra": 0.42,
-            "Castillo": 0.6,
-            "Pink Bourbon": 2.25,
-            "Colombia": 0.6,
-            "Typica": 1.75,
-            "Tabi": 2.0,
-            "Geisha": 0.55
+            "Bourbon": 0.16,
+            "Pink Bourbon": 0.18,
+            "Caturra": 0.24,
+            "Castillo": 0.24,
+            "Colombia (var.)": 0.24,
+            "Typica": 0.14,
+            "Tabi": 0.15,
+            "Geisha": 0.07
         },
         "Panama": {
-            "Geisha": 0.65,
-            "Sidra": 1.75,
-            "Catuaí": 1.25,
-            "Typica": 1.75
+            "Geisha": 0.07,
+            "Sidra": 0.13,
+            "Catuaí": 0.21,
+            "Typica": 0.14
         },
         "Kenya": {
-            "SL28": 2.75,
-            "SL34": 2.75,
-            "K7": 2.25,
-            "Ruiru 11": 2.5,
-            "Batian": 3.0
+            "SL28": 0.21,
+            "SL34": 0.21,
+            "K7": 0.18,
+            "Ruiru 11": 0.24,
+            "Batian": 0.28
         },
         "Ethiopia": {
-            "Heirloom (Yirgacheffe)": 0.75,
-            "Heirloom (Sidama)": 0.85,
-            "Heirloom (Guji / Oromia)": 0.65,
-            "74110": 1.75,
-            "74158": 1.75,
-            "Hybrids 75227": 2.75
+            "Yirgacheffe": 0.10,
+            "Sidama": 0.13,
+            "Guji": 0.08,
+            "74110 JARC": 0.18,
+            "74158 JARC": 0.18,
+            "75227 Hybrid Series": 0.32
         }
     };
 }
@@ -233,9 +233,9 @@ function renderFarms() {
                 </div>
                 <div class="fg">
                     <label>
-                        <span data-i18n="lbl_yield">Yield (kg / tree)</span>
+                        <span data-i18n="lbl_yield">Yield (kg green beans / tree)</span>
                     </label>
-                    <input type="number" value="${f.yieldPerTree}" min="0.1" step="0.1" oninput="updateFarm(${f.id}, 'yieldPerTree', +this.value)">
+                    <input type="number" value="${f.yieldPerTree}" min="0.01" step="0.01" oninput="updateFarm(${f.id}, 'yieldPerTree', +this.value)">
                 </div>
             </div>
         </div>`;
@@ -369,7 +369,7 @@ const scenarios = {
     },
     ethiopia: () => {
         state.farms = []; state._farmId = 0;
-        addFarm('Ethiopia', 'Heirloom (Yirgacheffe)', 50000);
+        addFarm('Ethiopia', 'Yirgacheffe', 50000);
         state.beanPrice = 12; state.cupsPerYear = 500000;
         state.nftPrimaryQty = 500; state.nftPrimaryPrice = 150; state.nftSecondaryTx = 1000;
     },
@@ -463,6 +463,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.documentElement.setAttribute('data-theme', state.theme);
     document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀️';
+
+    // Dismissible hint blocks (Admin Instructions)
+    document.querySelectorAll('.block-hint').forEach((hint, idx) => {
+        hint.style.position = 'relative';
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '✕';
+        closeBtn.className = 'hint-close-btn';
+        hint.appendChild(closeBtn);
+
+        // Check if previously dismissed
+        if (localStorage.getItem(`dismissed_hint_${idx}`)) {
+            hint.style.display = 'none';
+        }
+
+        closeBtn.onclick = () => {
+            hint.style.display = 'none';
+            localStorage.setItem(`dismissed_hint_${idx}`, 'true');
+        };
+    });
 
     _initGlobalTip();
     loadYields();
