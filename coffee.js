@@ -467,22 +467,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.documentElement.setAttribute('data-theme', state.theme);
     document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀️';
 
-    // Dismissible hint blocks (Admin Instructions)
+    // Collapsible hint blocks (Admin Instructions)
     document.querySelectorAll('.block-hint').forEach((hint, idx) => {
         hint.style.position = 'relative';
-        const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '✕';
-        closeBtn.className = 'hint-close-btn';
-        hint.appendChild(closeBtn);
+        hint.style.cursor = 'pointer';
 
-        // Check if previously dismissed
-        if (sessionStorage.getItem(`dismissed_hint_${idx}`)) {
-            hint.style.display = 'none';
+        const toggleBtn = document.createElement('button');
+        toggleBtn.innerHTML = '⌃';
+        toggleBtn.className = 'hint-close-btn';
+        toggleBtn.style.transition = 'transform 0.3s ease';
+        hint.appendChild(toggleBtn);
+
+        const body = hint.querySelector('.hint-body');
+        let isCollapsed = sessionStorage.getItem(`collapsed_hint_${idx}`) === 'true';
+
+        if (isCollapsed && body) {
+            body.style.display = 'none';
+            toggleBtn.style.transform = 'rotate(180deg)';
         }
 
-        closeBtn.onclick = () => {
-            hint.style.display = 'none';
-            sessionStorage.setItem(`dismissed_hint_${idx}`, 'true');
+        hint.onclick = () => {
+            if (!body) return;
+            isCollapsed = !isCollapsed;
+            if (isCollapsed) {
+                body.style.display = 'none';
+                toggleBtn.style.transform = 'rotate(180deg)';
+                sessionStorage.setItem(`collapsed_hint_${idx}`, 'true');
+            } else {
+                body.style.display = 'inline';
+                toggleBtn.style.transform = 'rotate(0deg)';
+                sessionStorage.removeItem(`collapsed_hint_${idx}`);
+            }
         };
     });
 
