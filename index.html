@@ -193,6 +193,11 @@
                 tg.ready();
                 tg.expand();
                 if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+
+                // Add is-tg class to body if we are actually inside Telegram
+                if (tg.platform && tg.platform !== 'unknown') {
+                    document.body.classList.add('is-tg');
+                }
                 if (tg.requestFullscreen) {
                     try { tg.requestFullscreen(); } catch (e) { console.log('Fullscreen API err:', e); }
                 }
