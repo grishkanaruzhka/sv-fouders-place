@@ -130,6 +130,23 @@
 
                     <!-- TAB: FARMS & YIELD -->
                     <div id="tab-farms" class="tab-pane active">
+
+                        <!-- ADMIN PANEL -->
+                        <div class="card mb-4" id="adminPanelCard">
+                            <div class="card-header" style="cursor: pointer;" onclick="toggleAdminPanel()"
+                                id="adminToggleHeader">
+                                <span class="card-title">⚙️ Admin Panel: Yields & Prices</span>
+                                <button class="hint-close-btn" id="adminToggleBtn"
+                                    style="transition: transform 0.3s ease; pointer-events: none;">⌃</button>
+                            </div>
+                            <div class="card-body" id="adminPanelBody" style="display: none;">
+                                <div class="tbl-wrap">
+                                    <div id="adminPanelContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FARMS LIST -->
                         <div class="card">
                             <div class="card-header">
                                 <span class="card-title" data-i18n="farms_title">🌱 Farms & Yield Setup</span>
