@@ -710,15 +710,16 @@ document.addEventListener('DOMContentLoaded', () => {
       let topInset = 0;
       let bottomInset = 0;
 
-      if (tg.safeAreaInset) {
-        topInset = tg.safeAreaInset.top;
-        bottomInset = tg.safeAreaInset.bottom;
+      const insets = tg.contentSafeAreaInsets || tg.safeAreaInset;
+      if (insets) {
+        topInset = insets.top;
+        bottomInset = insets.bottom;
       }
 
       if (topInset === 0 && tg.isExpanded) {
         const platform = tg.platform || '';
         if (platform === 'ios' || platform === 'android') {
-          topInset = 44; // Hardcoded fallback
+          topInset = 48; // Hardcoded fallback
         }
       }
 
@@ -726,6 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.documentElement.style.setProperty('--tg-safe-area-inset-bottom', bottomInset + 'px');
     }
     updateSafeArea();
+    tg.onEvent('contentSafeAreaChanged', updateSafeArea);
     tg.onEvent('safeAreaChanged', updateSafeArea);
     tg.onEvent('viewportChanged', () => { if (tg.isExpanded) updateSafeArea(); });
 
